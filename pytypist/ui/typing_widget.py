@@ -7,39 +7,39 @@ class TypingWidget(QtWidgets.QTextEdit):
 
     def set_target_text(self, text):
         self.finished = False
-        self.text_entered = ""
-        self.text_target = text
+        self.entered_text = ""
+        self.target_text = text
         self.update_display()
 
     def keyPressEvent(self, event):
         if self.finished:
             return
         if event.key() == QtCore.Qt.Key_Backspace:
-            if len(self.text_entered) > 0:
-                self.text_entered = self.text_entered[:-1]
+            if len(self.entered_text) > 0:
+                self.entered_text = self.entered_text[:-1]
         else:
             text = event.text()
-            self.text_entered += text
+            self.entered_text += text
         self.update_display()
 
     def update_display(self):
-        text_entered = self.text_entered
-        text_target = self.text_target
+        entered_text = self.entered_text
+        target_text = self.target_text
 
-        len_entered = len(text_entered)
-        len_target = len(text_target)
+        len_entered = len(entered_text)
+        len_target = len(target_text)
         if len_entered >= len_target:
             self.finished = True
 
         display_text = ""
-        for char_entered, char_target in zip(text_entered, text_target):
+        for char_entered, char_target in zip(entered_text, target_text):
             color = "green"
             if char_entered != char_target:
                 color = "red"
             display_text += '<span style="color:{}">{}</span>'.format(
                 color, char_target
             )
-        display_text += text_target[len_entered:]
+        display_text += target_text[len_entered:]
         self.setText(display_text)
 
         cursor = self.textCursor()
