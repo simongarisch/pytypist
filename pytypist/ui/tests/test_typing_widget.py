@@ -24,8 +24,7 @@ def test_typing_widget(qtbot):
             widget,
             QtGui.QKeyEvent(QtCore.QEvent.KeyPress, key, QtCore.Qt.NoModifier),
         )
-    
+
     text = widget.toHtml()
     print(text)
     1/0
-

@@ -1,18 +1,24 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
+from .ui_settings import config
 
 
 class TypingWidget(QtWidgets.QTextEdit):
     def __init__(self, parent):
         super().__init__("", parent)
+        self.refresh()
 
-    def set_target_text(self, text):
+    def refresh(self):
         self.finished = False
         self.entered_text = ""
+        self.target_text = None
+
+    def set_target_text(self, text):
+        self.refresh()
         self.target_text = text
         self.update_display()
 
     def keyPressEvent(self, event):
-        if self.finished:
+        if self.finished or self.target_text is None:
             return
         if event.key() == QtCore.Qt.Key_Backspace:
             if len(self.entered_text) > 0:
