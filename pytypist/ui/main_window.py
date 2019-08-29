@@ -6,7 +6,7 @@ from .ui_settings import config
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
-        super(MainWindow, self).__init__()
+        super().__init__()
         self.setup_ui()
         self.show()
 
