@@ -1,6 +1,7 @@
 import os
 from PyQt5 import QtWidgets, QtGui
 from .typing_widget import TypingWidget
+from .lessons_widget import LessonsWidget
 from .ui_settings import config
 
 
@@ -27,5 +28,19 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         self.setWindowIcon(QtGui.QIcon(icon_path))
 
-        typing_widget = self.typing_widget = TypingWidget(self)
-        self.setCentralWidget(typing_widget)
+        # create the widgets
+        frame = QtWidgets.QFrame()
+        lessons_widget = self.lessons_widget = LessonsWidget(frame)
+        typing_widget = self.typing_widget = TypingWidget(frame)
+
+        # set the size policy
+        lessons_widget.setSizePolicy(
+            QtWidgets.QSizePolicy.Fixed,
+            QtWidgets.QSizePolicy.Expanding
+        )
+
+        # set layout
+        hbox = QtWidgets.QHBoxLayout(frame)
+        hbox.addWidget(lessons_widget)
+        hbox.addWidget(typing_widget)
+        self.setCentralWidget(frame)
