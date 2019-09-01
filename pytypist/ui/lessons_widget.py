@@ -1,13 +1,18 @@
 from PyQt5 import QtWidgets
-from ..lessons import get_lessons
+from ..lessons import Lessons
 
 
-class LessonsWidget(QtWidgets.QListWidget):
+class LessonsWidget(QtWidgets.QTreeWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.setup_ui()
 
     def setup_ui(self):
-        lessons = self.lessons = get_lessons()
-        for lesson in lessons:
-            self.addItem(str(lesson))
+        headers = QtWidgets.QTreeWidgetItem(["Lessons"])
+        self.setHeaderItem(headers)
+        lessons = self.lessons = Lessons()
+
+        for section in lessons.sections.keys():
+            section_root = QtWidgets.QTreeWidgetItem(self, [section])
+            for lesson in lessons.sections[section]:
+                lesson_item = QtWidgets.QTreeWidgetItem(section_root, [str(lesson)])

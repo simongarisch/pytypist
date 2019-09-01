@@ -34,8 +34,9 @@ class MainWindow(QtWidgets.QMainWindow):
         typing_widget = self.typing_widget = TypingWidget(frame)
 
         # set the size policy
+        # https://www.riverbankcomputing.com/static/Docs/PyQt4/qsizepolicy.html#Policy-enum
         lessons_widget.setSizePolicy(
-            QtWidgets.QSizePolicy.Fixed,
+            QtWidgets.QSizePolicy.Minimum,
             QtWidgets.QSizePolicy.Expanding
         )
 
