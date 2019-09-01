@@ -1,5 +1,6 @@
 from functools import total_ordering
 from collections import OrderedDict
+from . singleton import Singleton
 from . import util
 
 
@@ -28,7 +29,7 @@ class Lesson:
         return self.number < other.number
 
 
-class Lessons:
+class Lessons(metaclass=Singleton):
     def __init__(self):
         self.lessons = self.sections = None
         self.get_sections()
@@ -36,10 +37,16 @@ class Lessons:
     def get_sections(self):
         lessons = self.lessons = sorted([Lesson(f) for f in util.list_files()])
         sections = OrderedDict()
-        for index, lesson in enumerate(lessons):
+        for lesson in lessons:
             section = lesson.section
             if section not in sections:
-                sections[section] = [lesson]
-            else:
-                sections[section].append(lesson)
+                sections[section] = OrderedDict()
+            sections[section][str(lesson)] = lesson
         self.sections = sections
+
+    def get_lesson_content(self, lesson_name):
+        for lesson in self.lessons:
+            if str(lesson) == lesson_name:
+                print(lesson.content)
+                return lesson.content
+        raise util.LessonNotFound("Unable to find lesson '{}'".format(lesson_name))

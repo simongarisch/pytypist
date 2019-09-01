@@ -10,6 +10,10 @@ class LessonValidationFailed(LessonError):
     """ Lesson failed validation. """
 
 
+class LessonNotFound(LessonError):
+    """ Unable to find lesson. """
+
+
 def list_files():
     """ List all of the lesson files. """
     dire_path = os.path.dirname(os.path.realpath(__file__))
