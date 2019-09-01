@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets
+from ..lessons import get_lessons
 
 
 class LessonsWidget(QtWidgets.QListWidget):
@@ -7,10 +8,6 @@ class LessonsWidget(QtWidgets.QListWidget):
         self.setup_ui()
 
     def setup_ui(self):
-        lessons = [
-            "lesson 1",
-            "lesson 2"
-        ]
+        lessons = self.lessons = get_lessons()
         for lesson in lessons:
-            self.addItem(lesson)
-    
+            self.addItem(str(lesson))
