@@ -9,7 +9,16 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setup_ui()
+        self.setup_style()
         self.show()
+
+    def setup_style(self):
+        dire_name = os.path.dirname(os.path.abspath(__file__))
+        file_name = os.path.join(
+            dire_name, "style_sheets", "elegant-dark.qss"
+        )
+        with open(file_name, "r") as target_file:
+            self.setStyleSheet(target_file.read())
 
     def setup_ui(self):
         self.setWindowTitle(
