@@ -1,10 +1,15 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
+from .signals import Signals
 from .ui_settings import config
+from ..lessons import Lessons
 
 
 class TypingWidget(QtWidgets.QTextEdit):
     def __init__(self, parent):
         super().__init__("", parent)
+        self.signals = Signals()
+        self.lessons = Lessons()
+        self.signals.lesson_selected.connect(self.set_target_text)
         self.refresh()
 
     def refresh(self):
@@ -12,9 +17,10 @@ class TypingWidget(QtWidgets.QTextEdit):
         self.entered_text = ""
         self.target_text = None
 
-    def set_target_text(self, text):
+    @QtCore.pyqtSlot(str)
+    def set_target_text(self, lesson_name):
         self.refresh()
-        self.target_text = text
+        self.target_text = self.lessons.get_lesson_content(lesson_name)
         self.update_display()
 
     def keyPressEvent(self, event):
@@ -51,14 +57,3 @@ class TypingWidget(QtWidgets.QTextEdit):
         cursor = self.textCursor()
         cursor.setPosition(len_entered, QtGui.QTextCursor.MoveAnchor)
         self.setTextCursor(cursor)
-
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication([])
-    win = QtWidgets.QMainWindow()
-
-    typing_widget = TypingWidget(win)
-    typing_widget.set_target_text("This is the text to enter!")
-    win.setCentralWidget(typing_widget)
-    win.show()
-    app.exec_()

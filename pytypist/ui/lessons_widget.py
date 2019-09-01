@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets
+from .signals import Signals
 from ..lessons import Lessons
 
 
@@ -8,11 +9,21 @@ class LessonsWidget(QtWidgets.QTreeWidget):
         self.setup_ui()
 
     def setup_ui(self):
-        headers = QtWidgets.QTreeWidgetItem(["Lessons"])
+        headers = QtWidgets.QTreeWidgetItem([""])
         self.setHeaderItem(headers)
         lessons = self.lessons = Lessons()
+        sections = lessons.sections
 
-        for section in lessons.sections.keys():
+        for section in sections.keys():
             section_root = QtWidgets.QTreeWidgetItem(self, [section])
-            for lesson in lessons.sections[section]:
-                lesson_item = QtWidgets.QTreeWidgetItem(section_root, [str(lesson)])
+            for lesson in sections[section].keys():
+                lesson_item = QtWidgets.QTreeWidgetItem(section_root, [lesson])
+
+        self.lesson_names = [str(lesson) for lesson in lessons.lessons]
+        self.signals = Signals()
+        self.itemClicked.connect(self.on_clicked)
+
+    def on_clicked(self, item, column):
+        text = item.text(column)
+        if text in self.lesson_names:  # we haven't clicked on a section
+            self.signals.lesson_selected.emit(text)
