@@ -1,5 +1,6 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui
 from .signals import signals
+from .ui_settings import config
 from ..lessons import Lessons
 
 
@@ -9,6 +10,10 @@ class LessonsWidget(QtWidgets.QTreeWidget):
         self.setup_ui()
 
     def setup_ui(self):
+        font = QtGui.QFont()
+        font.setPointSize(config.getint("lessons_widget", "font_size"))
+        self.setFont(font)
+
         headers = QtWidgets.QTreeWidgetItem([""])
         self.setHeaderItem(headers)
         lessons = self.lessons = Lessons()

@@ -9,6 +9,9 @@ class TypingWidget(QtWidgets.QTextEdit):
         super().__init__("", parent)
         self.lessons = Lessons()
         signals.lesson_selected.connect(self.set_target_text)
+        font = QtGui.QFont()
+        font.setPointSize(config.getint("typing_widget", "font_size"))
+        self.setFont(font)
         self.refresh()
 
     def refresh(self):
