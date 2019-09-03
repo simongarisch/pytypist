@@ -50,6 +50,9 @@ class TypingWidget(QtWidgets.QTextEdit):
             color = "green"
             if char_entered != char_target:
                 color = "red"
+                # replace red (incorrect) spaces with red asterix
+                if char_target == " ":
+                    char_target = "*"
             display_text += '<span style="color:{}">{}</span>'.format(
                 color, char_target
             )
