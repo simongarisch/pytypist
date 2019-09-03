@@ -14,7 +14,7 @@ class LessonsWidget(QtWidgets.QTreeWidget):
         font.setPointSize(config.getint("lessons_widget", "font_size"))
         self.setFont(font)
 
-        headers = QtWidgets.QTreeWidgetItem([""])
+        headers = QtWidgets.QTreeWidgetItem(["Lessons"])
         self.setHeaderItem(headers)
         lessons = self.lessons = Lessons()
         sections = lessons.sections
