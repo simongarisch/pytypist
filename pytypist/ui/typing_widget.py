@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-from .signals import Signals
+from .signals import signals
 from .ui_settings import config
 from ..lessons import Lessons
 
@@ -7,9 +7,8 @@ from ..lessons import Lessons
 class TypingWidget(QtWidgets.QTextEdit):
     def __init__(self, parent):
         super().__init__("", parent)
-        self.signals = Signals()
         self.lessons = Lessons()
-        self.signals.lesson_selected.connect(self.set_target_text)
+        signals.lesson_selected.connect(self.set_target_text)
         self.refresh()
 
     def refresh(self):

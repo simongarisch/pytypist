@@ -47,6 +47,5 @@ class Lessons(metaclass=Singleton):
     def get_lesson_content(self, lesson_name):
         for lesson in self.lessons:
             if str(lesson) == lesson_name:
-                print(lesson.content)
                 return lesson.content
         raise util.LessonNotFound("Unable to find lesson '{}'".format(lesson_name))
