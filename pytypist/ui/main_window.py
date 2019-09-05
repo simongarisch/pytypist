@@ -38,9 +38,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowIcon(QtGui.QIcon(icon_path))
 
         # create the widgets
+        left_frame = QtWidgets.QFrame()
+        right_frame = QtWidgets.QFrame()
         splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
-        left_frame = QtWidgets.QFrame(splitter)
-        right_frame = QtWidgets.QFrame(splitter)
 
         splitter.addWidget(left_frame)
         splitter.addWidget(right_frame)
@@ -48,29 +48,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         lessons_widget = self.lessons_widget = LessonsWidget(left_frame)
         typing_widget = self.typing_widget = TypingWidget(right_frame)
+        left_vbox = QtWidgets.QVBoxLayout()
+        left_vbox.addWidget(lessons_widget)
+        left_frame.setLayout(left_vbox)
 
-        """
-        # set the size policy
-        # https://www.riverbankcomputing.com/static/Docs/PyQt4/qsizepolicy.html#Policy-enum
-        for frame in [left_frame, right_frame]:
-            frame.setSizePolicy(
-                QtWidgets.QSizePolicy.Expanding,
-                QtWidgets.QSizePolicy.Expanding
-            )
+        right_vbox = QtWidgets.QVBoxLayout()
+        right_vbox.addWidget(typing_widget)
+        right_frame.setLayout(right_vbox)
 
-        lessons_widget.setSizePolicy(
-            QtWidgets.QSizePolicy.MinimumExpanding,
-            QtWidgets.QSizePolicy.Expanding
-        )
-        """
-        # set layout
-        splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
-        #left_frame.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        splitter.addWidget(left_frame)
-        splitter.addWidget(right_frame)
-        splitter.setSizes([25, 75])
-        #hbox = QtWidgets.QHBoxLayout(frame)
-        #hbox.addWidget(lessons_widget)
-        #hbox.addWidget(typing_widget)
-        #self.setCentralWidget(frame)
         self.setCentralWidget(splitter)
