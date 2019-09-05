@@ -21,6 +21,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.setStyleSheet(target_file.read())
 
     def setup_ui(self):
+        font_name = config.get("main_window", "font_name")
+        font = QtGui.QFont(font_name)
+        self.setFont(font)
+
         self.setWindowTitle(
             config.get("main_window", "title")
         )

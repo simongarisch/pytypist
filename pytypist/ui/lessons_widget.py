@@ -10,8 +10,9 @@ class LessonsWidget(QtWidgets.QTreeWidget):
         self.setup_ui()
 
     def setup_ui(self):
-        point_size = config.getint("lessons_widget", "font_size")
-        font = QtGui.QFont("Courier New", point_size, QtGui.QFont.Monospace)
+        font_name = config.get("lessons_widget", "font_name")
+        font_size = config.getint("lessons_widget", "font_size")
+        font = QtGui.QFont("Courier New", font_size, QtGui.QFont.Monospace)
         self.setFont(font)
 
         headers = QtWidgets.QTreeWidgetItem(["Lessons"])

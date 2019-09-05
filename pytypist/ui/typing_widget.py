@@ -9,9 +9,9 @@ class TypingWidget(QtWidgets.QTextEdit):
         super().__init__("", parent)
         self.lessons = Lessons()
         signals.lesson_selected.connect(self.set_target_text)
-        # 'Courier New' is a monospace font
-        point_size = config.getint("typing_widget", "font_size")
-        font = QtGui.QFont("Courier New", point_size, QtGui.QFont.Monospace)
+        font_name = config.get("typing_widget", "font_name")
+        font_size = config.getint("typing_widget", "font_size")
+        font = QtGui.QFont(font_name, font_size, QtGui.QFont.Monospace)
         self.setFont(font)
         self.refresh()
 
