@@ -25,10 +25,15 @@ class LessonsWidget(QtWidgets.QTreeWidget):
             for lesson in sections[section].keys():
                 lesson_item = QtWidgets.QTreeWidgetItem(section_root, [lesson])
 
+        self.section_names = list(sections.keys())
         self.lesson_names = [str(lesson) for lesson in lessons.lessons]
         self.itemClicked.connect(self.on_clicked)
 
     def on_clicked(self, item, column):
         text = item.text(column)
-        if text in self.lesson_names:  # we haven't clicked on a section
+        if text in self.lesson_names:
+            # lesson clicked, so start lesson
             signals.lesson_selected.emit(text)
+        if text in self.section_names:
+            # section clicked, so start presentation
+            print(text)
