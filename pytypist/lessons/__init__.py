@@ -1,1 +1,1 @@
-from .lessons import Lessons
+from .lessons import Lessons  # noqa: F401

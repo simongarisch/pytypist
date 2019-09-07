@@ -1,2 +1,2 @@
-from .typing_widget import TypingWidget
-from .main_window import MainWindow
+from .typing_widget import TypingWidget  # noqa: F401
+from .main_window import MainWindow  # noqa: F401

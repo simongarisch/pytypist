@@ -1,5 +1,5 @@
 import os
-from PyQt5 import QtCore, QtGui, QtWidgets, QtWebEngineWidgets
+from PyQt5 import QtCore, QtWidgets, QtWebEngineWidgets
 
 
 class PresentationError(Exception):

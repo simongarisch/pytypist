@@ -48,4 +48,6 @@ class Lessons(metaclass=Singleton):
         for lesson in self.lessons:
             if str(lesson) == lesson_name:
                 return lesson.content
-        raise util.LessonNotFound("Unable to find lesson '{}'".format(lesson_name))
+        raise util.LessonNotFound(
+            "Unable to find lesson '{}'".format(lesson_name)
+        )

@@ -32,7 +32,9 @@ def validate_lesson(file_name):
     """ All of the lesson files should obey a consistent format. """
     lesson = collect_lesson(file_name)
     if lesson.sections() != ["details"]:
-        raise LessonValidationFailed("There should only be one 'details' section.")
+        raise LessonValidationFailed(
+            "There should only be one 'details' section."
+        )
 
     section = lesson.get("details", "section", fallback=None)
     name = lesson.get("details", "name", fallback=None)
@@ -41,7 +43,8 @@ def validate_lesson(file_name):
     content = lesson.get("details", "content", fallback=None)
     if None in [section, name, number, content]:
         raise LessonValidationFailed(
-            "Each lesson requires details for 'section', 'name', 'number' and 'content'."
+            """Each lesson requires details for 'section',
+                'name', 'number' and 'content'."""
         )
     content = clean_lesson_content(content)
     return section, name, number, content
