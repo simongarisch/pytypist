@@ -2,7 +2,9 @@ import os
 from PyQt5 import QtWidgets, QtGui, QtCore
 from .typing_widget import TypingWidget
 from .lessons_widget import LessonsWidget
+from .presentation_widget import PresentationWidget
 from .ui_settings import config
+from .signals import signals
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -52,12 +54,29 @@ class MainWindow(QtWidgets.QMainWindow):
 
         lessons_widget = self.lessons_widget = LessonsWidget(left_frame)
         typing_widget = self.typing_widget = TypingWidget(right_frame)
+        presentation_widget = self.presentation_widget = PresentationWidget(right_frame)
         left_vbox = QtWidgets.QVBoxLayout()
         left_vbox.addWidget(lessons_widget)
         left_frame.setLayout(left_vbox)
 
         right_vbox = QtWidgets.QVBoxLayout()
         right_vbox.addWidget(typing_widget)
+        right_vbox.addWidget(presentation_widget)
+        presentation_widget.hide()
         right_frame.setLayout(right_vbox)
 
         self.setCentralWidget(splitter)
+
+        # connect the signals
+        signals.lesson_selected.connect(self.lesson_selected)
+        signals.section_selected.connect(self.section_selected)
+
+    @QtCore.pyqtSlot(str)
+    def lesson_selected(self, *args):
+        self.presentation_widget.hide()
+        self.typing_widget.show()
+
+    @QtCore.pyqtSlot(str)
+    def section_selected(self, *args):
+        self.presentation_widget.show()
+        self.typing_widget.hide()

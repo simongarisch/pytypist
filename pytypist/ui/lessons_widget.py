@@ -36,4 +36,4 @@ class LessonsWidget(QtWidgets.QTreeWidget):
             signals.lesson_selected.emit(text)
         if text in self.section_names:
             # section clicked, so start presentation
-            print(text)
+            signals.section_selected.emit(text)
