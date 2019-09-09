@@ -3,11 +3,11 @@ from typing import List
 
 
 def collect_words() -> List[str]:
-    dire_name = os.path.dirname(os.path.realpath(__file__))
-    file_name = "words.txt"
-    with open(file_name, "r") as target_file:
+    dire_path = os.path.dirname(os.path.realpath(__file__))
+    file_path = os.path.join(dire_path, "words.txt")
+    with open(file_path, "r") as target_file:
         contents = target_file.read()
-    words = [w.strip() for w in contents.split("\n")]
+    words = [w.strip() for w in contents.split("\n") if len(w) > 0]
     return words
 
 

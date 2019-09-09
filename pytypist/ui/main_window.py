@@ -54,7 +54,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         lessons_widget = self.lessons_widget = LessonsWidget(left_frame)
         typing_widget = self.typing_widget = TypingWidget(right_frame)
-        presentation_widget = self.presentation_widget = PresentationWidget(right_frame)
+        self.presentation_widget = PresentationWidget(right_frame)
+        presentation_widget = self.presentation_widget
         left_vbox = QtWidgets.QVBoxLayout()
         left_vbox.addWidget(lessons_widget)
         left_frame.setLayout(left_vbox)
