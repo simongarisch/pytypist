@@ -11,7 +11,10 @@ def collect_words() -> List[str]:
     return words
 
 
-def collect_words_containing(target_characters: str, *, must_contain:str="") -> List[str]:
+def collect_words_containing(
+        target_characters: str,
+        *, must_contain: str = ""
+     ) -> List[str]:
     words = collect_words()
     words_subset = []
     for word in words:
@@ -26,7 +29,7 @@ def collect_words_containing(target_characters: str, *, must_contain:str="") -> 
                 for char in must_contain:
                     if char in word:
                         must_contain_satisfied = True
-                
+
                 if must_contain_satisfied:
                     words_subset.append(word)
             else:
