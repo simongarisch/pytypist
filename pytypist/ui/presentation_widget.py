@@ -8,7 +8,7 @@ class PresentationError(Exception):
 
 
 class PresentationNotFound(PresentationError):
-    """ Unable to find index.html. """
+    """ Unable to find index.html or slides.html. """
 
 
 def get_presentation_index(name="example"):
@@ -24,16 +24,16 @@ def get_presentation_index(name="example"):
     )
 
     # check for index.html in the root directory
-    file_path = os.path.join(dire_path, "index.html")
+    file_path = os.path.join(dire_path, "slides.html")
     if os.path.isfile(file_path):
         return file_path
 
     # also check in 'site_folder'
-    file_path = os.path.join(dire_path, "site_folder", "index.html")
+    file_path = os.path.join(dire_path, "site_folder", "slides.html")
     if os.path.isfile(file_path):
         return file_path
 
-    raise PresentationNotFound("Cannot find index.html.")
+    raise PresentationNotFound("Cannot find slides.html.")
 
 
 class PresentationWidget(QtWidgets.QWidget):
@@ -50,11 +50,8 @@ class PresentationWidget(QtWidgets.QWidget):
 
     def load(self, name):
         index_path = get_presentation_index(name)
-        print("loading pres!")
-        print("index path", index_path)
         url = QtCore.QUrl().fromLocalFile(index_path)
         self.browser.load(url)
-        print("finished loading!")
 
     @QtCore.pyqtSlot(str)
     def section_selected(self, section):
