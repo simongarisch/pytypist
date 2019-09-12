@@ -5,7 +5,7 @@ import pytypist
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
-    pytypist.ui.MainWindow()
+    win = pytypist.ui.MainWindow()
     sys.exit(app.exec_())
 
 
