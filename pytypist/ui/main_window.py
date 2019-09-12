@@ -1,5 +1,6 @@
 import os
 from PyQt5 import QtWidgets, QtGui, QtCore
+from .stats_widget import StatsWidget
 from .typing_widget import TypingWidget
 from .lessons_widget import LessonsWidget
 from .presentation_widget import PresentationWidget
@@ -53,6 +54,7 @@ class MainWindow(QtWidgets.QMainWindow):
         splitter.setSizes([25, 75])
 
         lessons_widget = self.lessons_widget = LessonsWidget(left_frame)
+        stats_widget = self.stats_widget = StatsWidget(right_frame)
         typing_widget = self.typing_widget = TypingWidget(right_frame)
         self.presentation_widget = PresentationWidget(right_frame)
         presentation_widget = self.presentation_widget
@@ -61,6 +63,7 @@ class MainWindow(QtWidgets.QMainWindow):
         left_frame.setLayout(left_vbox)
 
         right_vbox = QtWidgets.QVBoxLayout()
+        right_vbox.addWidget(stats_widget)
         right_vbox.addWidget(typing_widget)
         right_vbox.addWidget(presentation_widget)
         presentation_widget.hide()
@@ -75,9 +78,11 @@ class MainWindow(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot(str)
     def lesson_selected(self, *args):
         self.presentation_widget.hide()
+        self.stats_widget.show()
         self.typing_widget.show()
 
     @QtCore.pyqtSlot(str)
     def section_selected(self, *args):
         self.presentation_widget.show()
+        self.stats_widget.hide()
         self.typing_widget.hide()
