@@ -1,5 +1,4 @@
-import os
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import QtWidgets, QtGui
 from .ui_settings import config
 
 
