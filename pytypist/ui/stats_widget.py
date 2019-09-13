@@ -43,6 +43,8 @@ class StatsWidget(QtWidgets.QWidget):
 
     def start_clicked(self):
         signals.status_update.emit("Start clicked...")
+        signals.enable_typing.emit()
 
     def pause_clicked(self):
         signals.status_update.emit("Paused...")
+        signals.disable_typing.emit()

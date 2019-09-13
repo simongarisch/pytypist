@@ -8,12 +8,30 @@ class TypingWidget(QtWidgets.QTextEdit):
     def __init__(self, parent):
         super().__init__("", parent)
         self.lessons = Lessons()
-        signals.lesson_selected.connect(self.set_target_text)
+        self.refresh()
+        self.set_font()
+        self.connect_signals()
+        self.create_timers()
+        self.set_read_only()
+
+    def set_font(self):
         font_name = config.get("typing_widget", "font_name")
         font_size = config.getint("typing_widget", "font_size")
         font = QtGui.QFont(font_name, font_size, QtGui.QFont.Monospace)
         self.setFont(font)
-        self.refresh()
+
+    def connect_signals(self):
+        signals.lesson_selected.connect(self.set_target_text)
+        signals.enable_typing.connect(lambda: self.set_read_only(False))
+        signals.disable_typing.connect(lambda: self.set_read_only(True))
+
+    def create_timers(self):
+        self.countdown_timer = QtCore.QTimer()
+        self.typing_timer = QtCore.QTimer()
+
+    @QtCore.pyqtSlot(bool)
+    def set_read_only(self, read_only=True):
+        self.setDisabled(read_only)
 
     def refresh(self):
         self.finished = False
