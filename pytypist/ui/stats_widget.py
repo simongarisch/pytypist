@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtGui
 from .ui_settings import config
+from .signals import signals
 
 
 class StatsWidget(QtWidgets.QWidget):
@@ -25,6 +26,9 @@ class StatsWidget(QtWidgets.QWidget):
         start_btn = self.start_btn = QtWidgets.QPushButton("Start")
         pause_btn = self.pause_btn = QtWidgets.QPushButton("Pause")
 
+        start_btn.clicked.connect(self.start_clicked)
+        pause_btn.clicked.connect(self.pause_clicked)
+
         countdown_lcd.display(0)
         wpm_lcd.display(0)
 
@@ -36,3 +40,9 @@ class StatsWidget(QtWidgets.QWidget):
         hbox.addWidget(start_btn)
         hbox.addWidget(pause_btn)
         self.setLayout(hbox)
+
+    def start_clicked(self):
+        signals.status_update.emit("Start clicked...")
+
+    def pause_clicked(self):
+        signals.status_update.emit("Paused...")

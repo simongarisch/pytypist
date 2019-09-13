@@ -71,9 +71,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setCentralWidget(splitter)
 
+        # show a statusbar
+        statusbar = self.statusbar = self.statusBar()
+        statusbar.showMessage("Ready")
+
         # connect the signals
         signals.lesson_selected.connect(self.lesson_selected)
         signals.section_selected.connect(self.section_selected)
+        signals.status_update.connect(self.show_status_update)
+
+    @QtCore.pyqtSlot(str)
+    def show_status_update(self, message):
+        self.statusbar.showMessage(message)
 
     @QtCore.pyqtSlot(str)
     def lesson_selected(self, *args):
