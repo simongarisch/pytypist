@@ -7,6 +7,8 @@ class Signals(QtCore.QObject):
     section_selected = QtCore.pyqtSignal(str)
     status_update = QtCore.pyqtSignal(str)
 
+    start_countdown = QtCore.pyqtSignal()
+    update_countdown = QtCore.pyqtSignal(int)
     enable_typing = QtCore.pyqtSignal()
     disable_typing = QtCore.pyqtSignal()
 

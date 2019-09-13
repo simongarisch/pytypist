@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 from .ui_settings import config
 from .signals import signals
 
@@ -29,8 +29,7 @@ class StatsWidget(QtWidgets.QWidget):
         start_btn.clicked.connect(self.start_clicked)
         pause_btn.clicked.connect(self.pause_clicked)
 
-        countdown_lcd.display(0)
-        wpm_lcd.display(0)
+        countdown_lcd.display(3)
 
         hbox = QtWidgets.QHBoxLayout()
         [hbox.addWidget(w) for w in [countdown_lbl, countdown_lcd]]
@@ -41,9 +40,16 @@ class StatsWidget(QtWidgets.QWidget):
         hbox.addWidget(pause_btn)
         self.setLayout(hbox)
 
+        # connect signals
+        signals.update_countdown.connect(self.update_countdown)
+
+    @QtCore.pyqtSlot(int)
+    def update_countdown(self, number):
+        self.countdown_lcd.display(number)
+
     def start_clicked(self):
         signals.status_update.emit("Start clicked...")
-        signals.enable_typing.emit()
+        signals.start_countdown.emit()
 
     def pause_clicked(self):
         signals.status_update.emit("Paused...")

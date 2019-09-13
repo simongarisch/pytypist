@@ -8,11 +8,11 @@ class TypingWidget(QtWidgets.QTextEdit):
     def __init__(self, parent):
         super().__init__("", parent)
         self.lessons = Lessons()
-        self.refresh()
         self.set_font()
         self.connect_signals()
         self.create_timers()
-        self.set_read_only()
+        self.set_disabled()
+        self.refresh()
 
     def set_font(self):
         font_name = config.get("typing_widget", "font_name")
@@ -22,18 +22,35 @@ class TypingWidget(QtWidgets.QTextEdit):
 
     def connect_signals(self):
         signals.lesson_selected.connect(self.set_target_text)
-        signals.enable_typing.connect(lambda: self.set_read_only(False))
-        signals.disable_typing.connect(lambda: self.set_read_only(True))
+        signals.start_countdown.connect(self.start_countdown)
+        signals.disable_typing.connect(lambda: self.set_disabled(True))
 
     def create_timers(self):
         self.countdown_timer = QtCore.QTimer()
         self.typing_timer = QtCore.QTimer()
 
+    def start_countdown(self):
+        self.enable_typing_in = 3  # seconds
+        signals.update_countdown.emit(self.enable_typing_in)
+        self.countdown_timer.stop()
+        self.countdown_timer.setInterval(1000)
+        self.countdown_timer.timeout.connect(self.countdown)
+        self.countdown_timer.start()
+
+    def countdown(self):
+        self.enable_typing_in -= 1
+        signals.update_countdown.emit(self.enable_typing_in)
+        if self.enable_typing_in <= 0:
+            self.countdown_timer.stop()
+            self.setDisabled(False)
+
     @QtCore.pyqtSlot(bool)
-    def set_read_only(self, read_only=True):
-        self.setDisabled(read_only)
+    def set_disabled(self, disabled=True):
+        self.setDisabled(disabled)
 
     def refresh(self):
+        self.countdown_timer.stop()
+        self.typing_timer.stop()
         self.finished = False
         self.entered_text = ""
         self.target_text = None
