@@ -42,13 +42,18 @@ class StatsWidget(QtWidgets.QWidget):
 
         # connect signals
         signals.update_countdown.connect(self.update_countdown)
+        signals.update_typing_time.connect(self.update_typing_time)
 
     @QtCore.pyqtSlot(int)
     def update_countdown(self, number):
         self.countdown_lcd.display(number)
 
+    @QtCore.pyqtSlot(int)
+    def update_typing_time(self, number):
+        self.timer_lcd.display(number)
+
     def start_clicked(self):
-        signals.status_update.emit("Start clicked...")
+        signals.status_update.emit("Start typing...")
         signals.start_countdown.emit()
 
     def pause_clicked(self):
