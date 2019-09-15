@@ -9,8 +9,8 @@ class TypingWidget(QtWidgets.QTextEdit):
         super().__init__("", parent)
         self.lessons = Lessons()
         self.set_font()
-        self.connect_signals()
         self.create_timers()
+        self.connect_signals()
         self.set_disabled()
         self.refresh()
 
@@ -23,32 +23,53 @@ class TypingWidget(QtWidgets.QTextEdit):
     def connect_signals(self):
         signals.lesson_selected.connect(self.set_target_text)
         signals.start_countdown.connect(self.start_countdown)
+        self.countdown_timer.timeout.connect(self.countdown)
+        self.typing_timer.timeout.connect(self.show_typing_time)
         signals.disable_typing.connect(lambda: self.set_disabled(True))
 
     def create_timers(self):
         self.countdown_timer = QtCore.QTimer()
         self.typing_timer = QtCore.QTimer()
+        self.countdown_timer.setInterval(1000)
+        self.typing_timer.setInterval(1000)
 
     def start_countdown(self):
-        self.enable_typing_in = 3  # seconds
+        if self.enable_typing_in <=0:
+            self.start_typing()
+            return
+
+        self.enable_typing_in = config.getint("typing_widget", "countdown")
         signals.update_countdown.emit(self.enable_typing_in)
-        self.countdown_timer.stop()
-        self.countdown_timer.setInterval(1000)
-        self.countdown_timer.timeout.connect(self.countdown)
         self.countdown_timer.start()
 
     def countdown(self):
         self.enable_typing_in -= 1
         signals.update_countdown.emit(self.enable_typing_in)
         if self.enable_typing_in <= 0:
-            self.countdown_timer.stop()
-            self.setDisabled(False)
+            self.start_typing()
+
+    def show_typing_time(self):
+        self.typing_time += 1
+        signals.update_typing_time.emit(self.typing_time)
+
+    def start_typing(self):
+        self.countdown_timer.stop()
+        self.set_disabled(False)
 
     @QtCore.pyqtSlot(bool)
     def set_disabled(self, disabled=True):
         self.setDisabled(disabled)
+        if disabled:
+            self.typing_timer.stop()
+        else:
+            self.typing_timer.start()
+            self.setFocus()
 
     def refresh(self):
+        self.enable_typing_in = config.getint("typing_widget", "countdown")
+        self.typing_time = 0
+        signals.update_countdown.emit(self.enable_typing_in)
+        signals.update_typing_time.emit(self.typing_time)
         self.countdown_timer.stop()
         self.typing_timer.stop()
         self.finished = False
@@ -80,6 +101,8 @@ class TypingWidget(QtWidgets.QTextEdit):
         len_target = len(target_text)
         if len_entered >= len_target:
             self.finished = True
+            self.typing_timer.stop()
+            signals.status_update.emit("Finished exercise...")
 
         display_text = ""
         for char_entered, char_target in zip(entered_text, target_text):
