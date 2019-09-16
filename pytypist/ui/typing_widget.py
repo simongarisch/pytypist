@@ -8,6 +8,7 @@ class TypingWidget(QtWidgets.QTextEdit):
     def __init__(self, parent):
         super().__init__("", parent)
         self.finished = True
+        self.chars_per_word = config.getint("typing_widget", "chars_per_word")
         self.lessons = Lessons()
         self.set_font()
         self.create_timers()
@@ -26,6 +27,7 @@ class TypingWidget(QtWidgets.QTextEdit):
         signals.start_countdown.connect(self.start_countdown)
         self.countdown_timer.timeout.connect(self.countdown)
         self.typing_timer.timeout.connect(self.show_typing_time)
+        self.typing_timer.timeout.connect(self.show_wpm)
         signals.disable_typing.connect(lambda: self.set_disabled(True))
 
     def create_timers(self):
@@ -53,6 +55,12 @@ class TypingWidget(QtWidgets.QTextEdit):
         self.typing_time += 1
         signals.update_typing_time.emit(self.typing_time)
 
+    def show_wpm(self):
+        words_typed = len(self.entered_text) / self.chars_per_word
+        minutes_passed = (self.typing_time / 60)
+        self.wpm = int(words_typed / minutes_passed)
+        signals.update_wpm.emit(self.wpm)
+
     def start_typing(self):
         if not self.finished:
             self.countdown_timer.stop()
@@ -76,8 +84,10 @@ class TypingWidget(QtWidgets.QTextEdit):
     def refresh(self):
         self.enable_typing_in = config.getint("typing_widget", "countdown")
         self.typing_time = 0
+        self.wpm = 0
         signals.update_countdown.emit(self.enable_typing_in)
         signals.update_typing_time.emit(self.typing_time)
+        signals.update_wpm.emit(self.wpm)
         self.countdown_timer.stop()
         self.typing_timer.stop()
         self.finished = False
