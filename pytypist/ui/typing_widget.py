@@ -7,6 +7,7 @@ from ..lessons import Lessons
 class TypingWidget(QtWidgets.QTextEdit):
     def __init__(self, parent):
         super().__init__("", parent)
+        self.finished = True
         self.lessons = Lessons()
         self.set_font()
         self.create_timers()
@@ -53,14 +54,21 @@ class TypingWidget(QtWidgets.QTextEdit):
         signals.update_typing_time.emit(self.typing_time)
 
     def start_typing(self):
-        self.countdown_timer.stop()
-        self.set_disabled(False)
+        if not self.finished:
+            self.countdown_timer.stop()
+            self.set_disabled(False)
+            signals.status_update.emit("Start typing...")
+        else:
+            self.set_disabled(True)
+            signals.status_update.emit("Finished exercise...")
 
     @QtCore.pyqtSlot(bool)
     def set_disabled(self, disabled=True):
         self.setDisabled(disabled)
         if disabled:
             self.typing_timer.stop()
+            if self.finished is False:
+                signals.status_update.emit("Paused...")
         else:
             self.typing_timer.start()
             self.setFocus()
@@ -102,6 +110,7 @@ class TypingWidget(QtWidgets.QTextEdit):
         if len_entered >= len_target:
             self.finished = True
             self.typing_timer.stop()
+            self.set_disabled(True)
             signals.status_update.emit("Finished exercise...")
 
         display_text = ""
