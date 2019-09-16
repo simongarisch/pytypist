@@ -11,6 +11,7 @@ class Signals(QtCore.QObject):
     update_countdown = QtCore.pyqtSignal(int)
     update_typing_time = QtCore.pyqtSignal(int)
     update_wpm = QtCore.pyqtSignal(int)
+    update_accuracy = QtCore.pyqtSignal(int)
 
     enable_typing = QtCore.pyqtSignal()
     disable_typing = QtCore.pyqtSignal()
