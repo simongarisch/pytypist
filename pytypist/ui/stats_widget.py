@@ -43,6 +43,7 @@ class StatsWidget(QtWidgets.QWidget):
         # connect signals
         signals.update_countdown.connect(self.update_countdown)
         signals.update_typing_time.connect(self.update_typing_time)
+        signals.update_wpm.connect(self.update_wpm)
 
     @QtCore.pyqtSlot(int)
     def update_countdown(self, number):
@@ -51,6 +52,10 @@ class StatsWidget(QtWidgets.QWidget):
     @QtCore.pyqtSlot(int)
     def update_typing_time(self, number):
         self.timer_lcd.display(number)
+
+    @QtCore.pyqtSlot(int)
+    def update_wpm(self, number):
+        self.wpm_lcd.display(number)
 
     def start_clicked(self):
         signals.start_countdown.emit()
