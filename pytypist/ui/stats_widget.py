@@ -23,6 +23,9 @@ class StatsWidget(QtWidgets.QWidget):
         wpm_lbl = QtWidgets.QLabel("  WPM", self)
         wpm_lcd = self.wpm_lcd = QtWidgets.QLCDNumber(self)
 
+        accuracy_lbl = QtWidgets.QLabel("  Accuracy", self)
+        accuracy_lcd = self.accuracy_lcd = QtWidgets.QLCDNumber(self)
+
         start_btn = self.start_btn = QtWidgets.QPushButton("Start")
         pause_btn = self.pause_btn = QtWidgets.QPushButton("Pause")
 
@@ -35,6 +38,7 @@ class StatsWidget(QtWidgets.QWidget):
         [hbox.addWidget(w) for w in [countdown_lbl, countdown_lcd]]
         [hbox.addWidget(w) for w in [timer_lbl, timer_lcd]]
         [hbox.addWidget(w) for w in [wpm_lbl, wpm_lcd]]
+        [hbox.addWidget(w) for w in [accuracy_lbl, accuracy_lcd]]
         hbox.addStretch()
         hbox.addWidget(start_btn)
         hbox.addWidget(pause_btn)
@@ -44,6 +48,7 @@ class StatsWidget(QtWidgets.QWidget):
         signals.update_countdown.connect(self.update_countdown)
         signals.update_typing_time.connect(self.update_typing_time)
         signals.update_wpm.connect(self.update_wpm)
+        signals.update_accuracy.connect(self.update_accuracy)
 
     @QtCore.pyqtSlot(int)
     def update_countdown(self, number):
@@ -56,6 +61,10 @@ class StatsWidget(QtWidgets.QWidget):
     @QtCore.pyqtSlot(int)
     def update_wpm(self, number):
         self.wpm_lcd.display(number)
+
+    @QtCore.pyqtSlot(int)
+    def update_accuracy(self, number):
+        self.accuracy_lcd.display(number)
 
     def start_clicked(self):
         signals.start_countdown.emit()
