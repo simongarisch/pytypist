@@ -26,9 +26,14 @@ class TypingWidget(QtWidgets.QTextEdit):
         signals.lesson_selected.connect(self.set_target_text)
         signals.start_countdown.connect(self.start_countdown)
         self.countdown_timer.timeout.connect(self.countdown)
-        self.typing_timer.timeout.connect(self.show_typing_time)
-        self.typing_timer.timeout.connect(self.show_wpm)
         signals.disable_typing.connect(lambda: self.set_disabled(True))
+        stats_methods = [
+            self.show_typing_time,
+            self.show_wpm,
+            self.show_accuracy
+        ]
+        for method in stats_methods:
+            self.typing_timer.timeout.connect(method)
 
     def create_timers(self):
         self.countdown_timer = QtCore.QTimer()
@@ -61,6 +66,9 @@ class TypingWidget(QtWidgets.QTextEdit):
         self.wpm = int(words_typed / minutes_passed)
         signals.update_wpm.emit(self.wpm)
 
+    def show_accuracy(self):
+        signals.update_accuracy.emit(self.accuracy)
+
     def start_typing(self):
         if not self.finished:
             self.countdown_timer.stop()
@@ -85,9 +93,11 @@ class TypingWidget(QtWidgets.QTextEdit):
         self.enable_typing_in = config.getint("typing_widget", "countdown")
         self.typing_time = 0
         self.wpm = 0
+        self.accuracy = 0
         signals.update_countdown.emit(self.enable_typing_in)
         signals.update_typing_time.emit(self.typing_time)
         signals.update_wpm.emit(self.wpm)
+        signals.update_accuracy.emit(self.accuracy)
         self.countdown_timer.stop()
         self.typing_timer.stop()
         self.finished = False
@@ -124,16 +134,21 @@ class TypingWidget(QtWidgets.QTextEdit):
             signals.status_update.emit("Finished exercise...")
 
         display_text = ""
+        greens, reds = 0, 0
         for char_entered, char_target in zip(entered_text, target_text):
             color = "green"
+            greens += 1
             if char_entered != char_target:
                 color = "red"
+                reds += 1
                 # replace red (incorrect) spaces with red asterix
                 if char_target == " ":
                     char_target = "*"
             display_text += '<span style="color:{}">{}</span>'.format(
                 color, char_target
             )
+        if len_entered > 0:
+            self.accuracy = int(greens / (greens + reds)  * 100)
         display_text += target_text[len_entered:]
         self.setText(display_text)
 
