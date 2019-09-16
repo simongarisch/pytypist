@@ -53,9 +53,7 @@ class StatsWidget(QtWidgets.QWidget):
         self.timer_lcd.display(number)
 
     def start_clicked(self):
-        signals.status_update.emit("Start typing...")
         signals.start_countdown.emit()
 
     def pause_clicked(self):
-        signals.status_update.emit("Paused...")
         signals.disable_typing.emit()
