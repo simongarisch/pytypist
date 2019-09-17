@@ -73,7 +73,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # show a statusbar
         statusbar = self.statusbar = self.statusBar()
-        statusbar.showMessage("Ready")
+        statusbar.showMessage("Ready.")
 
         # connect the signals
         signals.lesson_selected.connect(self.lesson_selected)

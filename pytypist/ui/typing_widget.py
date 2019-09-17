@@ -109,6 +109,7 @@ class TypingWidget(QtWidgets.QTextEdit):
         self.refresh()
         self.target_text = self.lessons.get_lesson_content(lesson_name)
         self.update_display()
+        signals.status_update.emit("Ready.")
 
     def keyPressEvent(self, event):
         if self.finished or self.target_text is None:
