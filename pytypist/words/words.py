@@ -36,16 +36,3 @@ def collect_words_containing(
                 words_subset.append(word)
 
     return words_subset
-
-
-def main():
-    words = collect_words_containing("asdfjkl;")
-    print(words)
-    print("*****")
-
-    words = collect_words_containing("asdfjkl;", must_contain="kl")
-    print(words)
-
-
-if __name__ == "__main__":
-    main()
