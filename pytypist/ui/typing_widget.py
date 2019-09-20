@@ -42,7 +42,7 @@ class TypingWidget(QtWidgets.QTextEdit):
         self.typing_timer.setInterval(1000)
 
     def start_countdown(self):
-        if self.enable_typing_in <=0:
+        if self.enable_typing_in <= 0:
             self.start_typing()
             return
 
@@ -149,7 +149,7 @@ class TypingWidget(QtWidgets.QTextEdit):
                 color, char_target
             )
         if len_entered > 0:
-            self.accuracy = int(greens / (greens + reds)  * 100)
+            self.accuracy = int(greens / (greens + reds) * 100)
         display_text += target_text[len_entered:]
         self.setText(display_text)
 
