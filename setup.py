@@ -8,7 +8,7 @@ setup(
     author="Simon Garisch",
     author_email="gatman946@gmail.com",
     description="A typing tutor built with PyQt.",
-    install_requires=["PyQt5>=5.13.0"],
+    install_requires=["PyQt5==5.10.1"],
     license="MIT license",
     long_description=readme,
     include_package_data=True,

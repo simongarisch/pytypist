@@ -14,10 +14,10 @@ class LessonNotFound(LessonError):
     """ Unable to find lesson. """
 
 
-def list_files():
+def list_files(endswith=".ini"):
     """ List all of the lesson files. """
     dire_path = os.path.dirname(os.path.realpath(__file__))
-    return [f for f in os.listdir(dire_path) if f.endswith(".ini")]
+    return [f for f in os.listdir(dire_path) if f.endswith(endswith)]
 
 
 def clean_lesson_content(content):
@@ -38,7 +38,7 @@ def validate_lesson(file_name):
 
     section = lesson.get("details", "section", fallback=None)
     name = lesson.get("details", "name", fallback=None)
-    number = lesson.getint("details", "number", fallback=None)
+    number = lesson.get("details", "number", fallback=None)
 
     content = lesson.get("details", "content", fallback=None)
     if None in [section, name, number, content]:
@@ -64,13 +64,3 @@ def collect_lesson(file_name):
         )
     )
     return config
-
-
-def main():
-    files = list_files()
-    for file_name in files:
-        print(validate_lesson(file_name))
-
-
-if __name__ == "__main__":
-    main()
