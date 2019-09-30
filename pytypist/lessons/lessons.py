@@ -6,10 +6,10 @@ from . import util
 
 @total_ordering
 class Lesson:
-    def __init__(self, file_name):
-        self.file_name = file_name
+    def __init__(self, file_path):
+        self.file_path = file_path
         section, name, number, content = util.validate_lesson(
-            file_name
+            file_path
         )
         self.section = section
         self.name = name
@@ -20,7 +20,7 @@ class Lesson:
         return self.name
 
     def __repr__(self):
-        return "Lesson({})".format(self.file_name)
+        return "Lesson({})".format(self.file_path)
 
     def __eq__(self, other):
         return self.number == other.number
@@ -35,7 +35,9 @@ class Lessons(metaclass=Singleton):
         self.get_sections()
 
     def get_sections(self):
-        lessons = self.lessons = sorted([Lesson(f) for f in util.list_files()])
+        lessons = self.lessons = sorted(
+            [Lesson(f) for f in util.list_lesson_files()]
+        )
         sections = OrderedDict()
         for lesson in lessons:
             section = lesson.section

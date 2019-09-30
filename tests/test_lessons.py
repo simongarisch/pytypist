@@ -1,4 +1,4 @@
-from pytypist.lessons import Lessons
+from pytypist.lessons import Lessons, util
 
 
 class TestLessons:
@@ -6,3 +6,8 @@ class TestLessons:
         lessons1 = Lessons()
         lessons2 = Lessons()
         assert lessons1 is lessons2
+
+    def test_list_files(self):
+        files = util.list_files()
+        assert isinstance(files, list)
+        assert len(files) > 0

@@ -14,10 +14,19 @@ class LessonNotFound(LessonError):
     """ Unable to find lesson. """
 
 
-def list_files(endswith=".ini"):
+def list_lesson_files(endswith=".ini"):
     """ List all of the lesson files. """
     dire_path = os.path.dirname(os.path.realpath(__file__))
-    return [f for f in os.listdir(dire_path) if f.endswith(endswith)]
+    lesson_files = []
+    for item in os.listdir(dire_path):
+        if os.path.isdir(item) and not item.startswith("__"):
+            subfolder_path = os.path.join(dire_path, item)
+            subfolder_items = os.listdir(subfolder_path)
+            for subitem in os.listdir(subfolder_items):
+                if subitem.endswith(endswith):
+                    subpath = os.path.join(subfolder_path, subitem)
+                    lesson_files.append(subpath)
+    return lesson_files
 
 
 def clean_lesson_content(content):
@@ -50,17 +59,17 @@ def validate_lesson(file_name):
     return section, name, number, content
 
 
-def collect_lesson(file_name):
+def collect_lesson(file_path):
     """ Collects and returns data in the lesson .ini file. """
-    if not isinstance(file_name, str):
-        raise TypeError("file_name should be of the type str.")
-    if not file_name.endswith("ini"):
+    if not isinstance(file_path, str):
+        raise TypeError("file_path should be of the type str.")
+    if not file_path.endswith("ini"):
         raise ValueError("lesson files should be in .ini format.")
     config = ConfigParser()
     config.read(
         os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            file_name
+            #os.path.dirname(os.path.abspath(__file__)),
+            file_path
         )
     )
     return config
