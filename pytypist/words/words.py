@@ -12,18 +12,18 @@ def collect_words() -> List[str]:
 
 
 def collect_words_containing(
-        target_characters: str,
+        characters: str,
         *, must_contain: str = ""
      ) -> List[str]:
     words = collect_words()
     words_subset = []
     for word in words:
-        has_target_characters = True
+        has_characters = True
         for char in word:
-            if char not in target_characters:
-                has_target_characters = False
+            if char not in characters:
+                has_characters = False
 
-        if has_target_characters:
+        if has_characters:
             if len(must_contain) > 0:
                 must_contain_satisfied = False
                 for char in must_contain:
