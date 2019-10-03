@@ -8,6 +8,6 @@ class TestLessons:
         assert lessons1 is lessons2
 
     def test_list_files(self):
-        files = util.list_files()
+        files = util.list_lesson_files()
         assert isinstance(files, list)
         assert len(files) > 0
