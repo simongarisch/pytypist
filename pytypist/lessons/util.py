@@ -14,19 +14,17 @@ class LessonNotFound(LessonError):
     """ Unable to find lesson. """
 
 
-def list_lesson_files(endswith=".ini"):
+def list_lesson_files():
     """ List all of the lesson files. """
     dire_path = os.path.dirname(os.path.realpath(__file__))
     lesson_files = []
     for item in os.listdir(dire_path):
-        subfolder_path = os.path.join(dire_path, item)
-        if os.path.isdir(item) and not item.startswith("__"):
-            subfolder_path = os.path.join(dire_path, item)
-            print(subfolder_path)
-            subfolder_items = os.listdir(subfolder_path)
-            for subitem in os.listdir(subfolder_items):
-                if subitem.endswith(endswith):
-                    subpath = os.path.join(subfolder_path, subitem)
+        full_path = os.path.join(dire_path, item)
+        if os.path.isdir(full_path) and not item.startswith("__"):
+            subfolder_items = os.listdir(full_path)
+            for subitem in subfolder_items:
+                if subitem.endswith(".ini"):
+                    subpath = os.path.join(full_path, subitem)
                     lesson_files.append(subpath)
     return lesson_files
 
