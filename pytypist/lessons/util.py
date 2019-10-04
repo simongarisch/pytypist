@@ -14,19 +14,38 @@ class LessonNotFound(LessonError):
     """ Unable to find lesson. """
 
 
-def list_lesson_files():
-    """ List all of the lesson files. """
+class SlidesNotFound(LessonError):
+    """ Unable to find slides. """
+
+
+def get_section_folder_paths():
+    """ Collect the folder paths for all sections. """
+    section_folder_paths = []
     dire_path = os.path.dirname(os.path.realpath(__file__))
-    lesson_files = []
     for item in os.listdir(dire_path):
         full_path = os.path.join(dire_path, item)
         if os.path.isdir(full_path) and not item.startswith("__"):
-            subfolder_items = os.listdir(full_path)
-            for subitem in subfolder_items:
-                if subitem.endswith(".ini"):
-                    subpath = os.path.join(full_path, subitem)
-                    lesson_files.append(subpath)
+            section_folder_paths.append(full_path)
+    return section_folder_paths
+
+
+def list_lesson_files():
+    """ Returns a list of all the lesson files. """
+    lesson_files = []
+    for section_path in get_section_folder_paths():
+        folder_items = os.listdir(section_path)
+        for item in folder_items:
+            if item.endswith(".ini"):
+                lesson_path = os.path.join(section_path, item)
+                lesson_files.append(lesson_path)
     return lesson_files
+
+
+def collect_slides():
+    slide_paths = dict()
+    for section_path in get_section_folder_paths():
+        section = None
+        slides_path = None
 
 
 def clean_lesson_content(content):

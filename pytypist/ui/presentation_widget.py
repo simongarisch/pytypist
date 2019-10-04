@@ -3,19 +3,8 @@ from PyQt5 import QtCore, QtWidgets, QtWebEngineWidgets
 from .signals import signals
 
 
-class PresentationError(Exception):
-    """ Base exception relating to presentations. """
-
-
-class PresentationNotFound(PresentationError):
-    """ Unable to find index.html or slides.html. """
-
-
-def get_presentation_index(name="example"):
-    """ Get the index.html file associate with a presentation.
-        The naming convention should be lower case with spaces
-        replaced by underscores.
-    """
+def get_presentation_index(section):
+    """ Get the index.html file associate with a presentation. """
     name = str(name).lower().replace(" ", "_")
     dire_path = os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
