@@ -24,28 +24,30 @@ def get_section_folder_paths():
     dire_path = os.path.dirname(os.path.realpath(__file__))
     for item in os.listdir(dire_path):
         full_path = os.path.join(dire_path, item)
-        if os.path.isdir(full_path) and not item.startswith("__"):
+        if os.path.isdir(full_path) and not item.startswith("_"):
             section_folder_paths.append(full_path)
     return section_folder_paths
 
 
-def list_lesson_files():
+def list_lesson_files(folder_path):
     """ Returns a list of all the lesson files. """
     lesson_files = []
-    for section_path in get_section_folder_paths():
-        folder_items = os.listdir(section_path)
-        for item in folder_items:
-            if item.endswith(".ini"):
-                lesson_path = os.path.join(section_path, item)
-                lesson_files.append(lesson_path)
+    folder_items = os.listdir(folder_path)
+    for item in folder_items:
+        if item.endswith(".ini"):
+            lesson_path = os.path.join(folder_path, item)
+            lesson_files.append(lesson_path)
     return lesson_files
 
 
-def collect_slides():
-    slide_paths = dict()
-    for section_path in get_section_folder_paths():
-        section = None
-        slides_path = None
+def collect_slides(folder_path):
+    """ Return the path to slides.html for this section. """
+    slides_path = os.path.join(
+        folder_path, "site_folder", "slides.html"
+    )
+    if not os.path.isfile(slides_path):
+        raise SlidesNotFound
+    return slides_path
 
 
 def clean_lesson_content(content):
