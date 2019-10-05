@@ -3,28 +3,6 @@ from PyQt5 import QtCore, QtWidgets, QtWebEngineWidgets
 from .signals import signals
 
 
-def get_presentation_index(section):
-    """ Get the index.html file associate with a presentation. """
-    name = str(name).lower().replace(" ", "_")
-    dire_path = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        "presentations",
-        name
-    )
-
-    # check for index.html in the root directory
-    file_path = os.path.join(dire_path, "slides.html")
-    if os.path.isfile(file_path):
-        return file_path
-
-    # also check in 'site_folder'
-    file_path = os.path.join(dire_path, "site_folder", "slides.html")
-    if os.path.isfile(file_path):
-        return file_path
-
-    raise PresentationNotFound("Cannot find slides.html.")
-
-
 class PresentationWidget(QtWidgets.QWidget):
     def __init__(self, parent):
         super().__init__(parent)
