@@ -53,3 +53,9 @@ class Lessons(metaclass=Singleton):
         raise util.LessonNotFound(
             "Unable to find lesson '{}'".format(lesson_name)
         )
+
+
+class Sections:
+    @classmethod
+    def __init__(class):
+        cls._section_folders = util.get_section_folder_paths()
