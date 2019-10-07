@@ -22,7 +22,7 @@ def list_files(folder_path, endswith=None):
         include_file = True
         if endswith is not None and not item.endswith(str(endswith)):
             include_file = False
-        if include_file:     
+        if include_file:
             file_path = os.path.join(folder_path, item)
             files_list.append(file_path)
     return files_list

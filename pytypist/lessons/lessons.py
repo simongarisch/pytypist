@@ -2,7 +2,6 @@ import functools
 from collections import OrderedDict
 from weakref import WeakValueDictionary
 from configparser import ConfigParser
-from . singleton import Singleton
 from . import util
 
 
@@ -142,6 +141,6 @@ class Lessons(OrderedDict):
         section_names = [lesson.section for lesson in self.lessons]
         if len(set(section_names)) != 1:
             raise LessonValidationFailed(
-                "Lessons in the same folder should have identical section names."
+                "Grouped Lessons should have identical section names."
             )
         self._section = section_names[0]

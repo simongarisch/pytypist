@@ -1,4 +1,3 @@
-import os
 from PyQt5 import QtCore, QtWidgets, QtWebEngineWidgets
 from .signals import signals
 from ..lessons import Section

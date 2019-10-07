@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from .signals import signals
 from .ui_settings import config
-from ..lessons import Lesson, Section, Sections
+from ..lessons import Lesson
 
 
 class TypingWidget(QtWidgets.QTextEdit):
