@@ -5,7 +5,7 @@ def only_characters_included(words, characters):
     for word in words:
         for char in word:
             if char not in characters:
-                return False
+                return False  # pragma: no cover
     return True
 
 
@@ -16,7 +16,7 @@ def has_required_characters(words, characters):
             if char in word:
                 includes_character = True
         if not includes_character:
-            return False
+            return False  # pragma: no cover
 
     return True
 
