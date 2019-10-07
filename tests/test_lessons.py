@@ -1,5 +1,11 @@
 import os
+import pytest
 from pytypist.lessons import Sections, util
+from pytypist.lessons.lessons import (
+    collect_lesson,
+    validate_lesson,
+    LessonValidationFailed,
+)
 
 
 class TestLessons:
@@ -24,3 +30,15 @@ class TestLessons:
             assert len(files) > 0
             for file_name in files:
                 assert file_name.endswith("ini")
+
+    def test_collect_lesson(self):
+        with pytest.raises(TypeError):
+            collect_lesson(None)
+        with pytest.raises(ValueError):
+            collect_lesson("some_lesson.csv")
+
+    def test_validate_lesson(self):
+        with pytest.raises(LessonValidationFailed):
+            validate_lesson("lesson_extra_sections.ini")
+        with pytest.raises(LessonValidationFailed):
+            validate_lesson("lesson_missing_number.ini")
