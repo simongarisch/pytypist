@@ -1,10 +1,20 @@
 import os
 import pytest
-from pytypist.lessons import Lesson, Section, Sections, util
+from pytypist.lessons import Lesson, util
+
 from pytypist.lessons.lessons import (
     collect_lesson,
     validate_lesson,
     LessonValidationFailed,
+    LessonNotFound,
+    LessonNameNotUnique,
+)
+
+from pytypist.lessons.sections import (
+    Section,
+    Sections,
+    SectionNotFound,
+    SectionNameNotUnique,
 )
 
 
@@ -61,6 +71,14 @@ class TestLessons:
         lesson2 = Lesson.get_lesson_by_name(lesson_name)
         assert lesson1 is lesson2
         assert isinstance(lesson1, Lesson)
+        with pytest.raises(LessonNotFound):
+            Lesson.get_lesson_by_name("zzz.ini")
+
+    def test_lesson_name_not_unique(self):
+        lesson_name = Lesson.list_names()[0]
+        lesson = Lesson.get_lesson_by_name(lesson_name)
+        with pytest.raises(LessonNameNotUnique):
+            Lesson.register(lesson)
 
     def test_lesson_str(self):
         names_list = Lesson.list_names()
@@ -73,6 +91,22 @@ class TestLessons:
         lesson_name2 = names_list[1]
         lesson1 = Lesson.get_lesson_by_name(lesson_name1)
         lesson2 = Lesson.get_lesson_by_name(lesson_name2)
+        assert isinstance(lesson1, Lesson)
+        assert isinstance(lesson2, Lesson)
         assert lesson1 == lesson1
         assert lesson1 != lesson2
         assert lesson1 < lesson2
+
+    def test_get_section_by_name(self):
+        names_list = Section.list_names()
+        section_name = names_list[0]
+        section = Section.get_section_by_name(section_name)
+        assert isinstance(section, Section)
+        with pytest.raises(SectionNotFound):
+            Section.get_section_by_name("zzz")
+
+    def test_section_name_not_unique(self):
+        section_name = Section.list_names()[0]
+        section = Section.get_section_by_name(section_name)
+        with pytest.raises(SectionNameNotUnique):
+            Section.register(section)

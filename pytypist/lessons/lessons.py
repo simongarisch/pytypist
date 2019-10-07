@@ -54,10 +54,11 @@ def validate_lesson(file_name):
     content = lesson.get("details", "content", fallback=None)
 
     if None in [section, name, number, content]:
-        raise LessonValidationFailed(
-            """Each lesson requires details for 'section',
-                'name', 'number' and 'content'."""
-        )
+        message = """
+            Each lesson requires details for 'section',
+            'name', 'number' and 'content'.
+        """
+        raise LessonValidationFailed(message)
     content = clean_lesson_content(content)
     return section, name, number, content
 
