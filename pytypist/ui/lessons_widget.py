@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, QtGui
 from .signals import signals
 from .ui_settings import config
-from ..lessons import Lessons
+from ..lessons import Lesson, Sections
 
 
 class LessonsWidget(QtWidgets.QTreeWidget):
@@ -17,16 +17,16 @@ class LessonsWidget(QtWidgets.QTreeWidget):
 
         headers = QtWidgets.QTreeWidgetItem(["Lessons"])
         self.setHeaderItem(headers)
-        lessons = self.lessons = Lessons()
-        sections = lessons.sections
+        sections = Sections()
 
-        for section in sections.keys():
-            section_root = QtWidgets.QTreeWidgetItem(self, [section])
-            for lesson in sections[section].keys():
-                QtWidgets.QTreeWidgetItem(section_root, [lesson])
+        for section_name in sections:
+            section = sections[section_name]
+            section_root = QtWidgets.QTreeWidgetItem(self, [section_name])
+            for lesson_name in section:
+                QtWidgets.QTreeWidgetItem(section_root, [lesson_name])
 
-        self.section_names = list(sections.keys())
-        self.lesson_names = [str(lesson) for lesson in lessons.lessons]
+        self.section_names = list(sections)
+        self.lesson_names = Lesson.list_names()
         self.itemClicked.connect(self.on_clicked)
 
     def on_clicked(self, item, column):

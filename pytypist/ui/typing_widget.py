@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from .signals import signals
 from .ui_settings import config
-from ..lessons import Lessons
+from ..lessons import Lesson, Section, Sections
 
 
 class TypingWidget(QtWidgets.QTextEdit):
@@ -9,7 +9,6 @@ class TypingWidget(QtWidgets.QTextEdit):
         super().__init__("", parent)
         self.finished = True
         self.chars_per_word = config.getint("typing_widget", "chars_per_word")
-        self.lessons = Lessons()
         self.set_font()
         self.create_timers()
         self.connect_signals()
@@ -107,7 +106,8 @@ class TypingWidget(QtWidgets.QTextEdit):
     @QtCore.pyqtSlot(str)
     def set_target_text(self, lesson_name):
         self.refresh()
-        self.target_text = self.lessons.get_lesson_content(lesson_name)
+        lesson = Lesson.get_lesson_by_name(lesson_name)
+        self.target_text = lesson.content
         self.update_display()
         signals.status_update.emit("Ready.")
 
