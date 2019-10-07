@@ -9,7 +9,7 @@ class TestLessons:
         sections2 = Sections()
         assert sections1 is sections2
 
-    def test_list_folder_paths():
+    def test_list_folder_paths(self):
         folder_paths = util.list_folder_paths()
         assert len(folder_paths) > 0
         for folder_path in folder_paths:
