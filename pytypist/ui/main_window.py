@@ -6,9 +6,12 @@ from .lessons_widget import LessonsWidget
 from .presentation_widget import PresentationWidget
 from .ui_settings import config
 from .signals import signals
+from ..lessons import Sections
 
 
 class MainWindow(QtWidgets.QMainWindow):
+    _sections = Sections()
+
     def __init__(self):
         super().__init__()
         self.setup_style()

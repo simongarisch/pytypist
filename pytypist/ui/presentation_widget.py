@@ -1,11 +1,10 @@
 import os
 from PyQt5 import QtCore, QtWidgets, QtWebEngineWidgets
 from .signals import signals
-from ..lessons import Section, Sections
+from ..lessons import Section
 
 
 class PresentationWidget(QtWidgets.QWidget):
-    _sections = Sections()
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -24,7 +23,7 @@ class PresentationWidget(QtWidgets.QWidget):
 
     @QtCore.pyqtSlot(str)
     def section_selected(self, section_name):
-        section = self._sections[section_name]
+        section = Section.get_section_by_name(section_name)
         if not isinstance(section, Section):
             raise TypeError("Expected Section instance.")
         file_path = section.collect_slides()
