@@ -15,6 +15,7 @@ from pytypist.lessons.sections import (
     Sections,
     SectionNotFound,
     SectionNameNotUnique,
+    SlidesNotFound
 )
 
 
@@ -110,3 +111,14 @@ class TestLessons:
         section = Section.get_section_by_name(section_name)
         with pytest.raises(SectionNameNotUnique):
             Section.register(section)
+
+    def test_collect_slides(self):
+        section_name = Section.list_names()[0]
+        section = Section.get_section_by_name(section_name)
+        slides = section.collect_slides()
+        assert os.path.isfile(slides)
+        assert slides.endswith(".html")
+
+        with pytest.raises(SlidesNotFound):
+            section._section_folder = "zzz"
+            section.collect_slides()
