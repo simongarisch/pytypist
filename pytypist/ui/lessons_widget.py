@@ -13,6 +13,7 @@ class LessonsWidget(QtWidgets.QTreeWidget):
         font_name = config.get("lessons_widget", "font_name")
         font_size = config.getint("lessons_widget", "font_size")
         font = QtGui.QFont(font_name, font_size, QtGui.QFont.Monospace)
+        font.setWeight(QtGui.QFont.Light)
         self.setFont(font)
 
         headers = QtWidgets.QTreeWidgetItem(["Lessons"])
