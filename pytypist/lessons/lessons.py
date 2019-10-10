@@ -132,16 +132,25 @@ class Lessons(OrderedDict):
             Lesson(file_path) for file_path in lesson_files
         ])
 
-        for lesson in lessons:
-            self[lesson.name] = lesson
-
     def _check_section_names_identical(self):
         """ All lessons in the same folder should have the
             same section name.
         """
         section_names = [lesson.section for lesson in self.lessons]
-        if len(set(section_names)) != 1:
+
+        set_section_names = set(section_names)
+        if len(set_section_names) == 0:
             raise LessonValidationFailed(
-                "Grouped Lessons should have identical section names."
+                "{}: There are no lessons for this section.".format(
+                    self._section_folder
+                )
             )
+
+        if len(set(section_names)) > 1:
+            raise LessonValidationFailed(
+                "{}: Grouped Lessons should have identical section names.".format(
+                    self._section_folder
+                )
+            )
+
         self._section = section_names[0]
