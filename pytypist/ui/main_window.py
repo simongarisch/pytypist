@@ -16,7 +16,7 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__()
         self.setup_style()
         self.setup_ui()
-        self.show()
+        self.showMaximized()
 
     def setup_style(self):
         dire_name = os.path.dirname(os.path.abspath(__file__))
