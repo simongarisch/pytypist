@@ -132,6 +132,10 @@ class Lessons(OrderedDict):
             Lesson(file_path) for file_path in lesson_files
         ])
 
+        for lesson in lessons:
+            self[lesson.name] = lesson
+
+
     def _check_section_names_identical(self):
         """ All lessons in the same folder should have the
             same section name.
