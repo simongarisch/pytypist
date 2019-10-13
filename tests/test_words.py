@@ -1,4 +1,4 @@
-from pytypist.words import collect_words_containing
+from pytypist.words import collect_words_containing, capitalize
 
 
 def only_characters_included(words, characters):
@@ -42,3 +42,9 @@ def test_collect_words_must_contain():
     assert has_required_characters(
         words, required
     )
+
+
+def test_capitalize():
+    assert capitalize("this") == "This"
+    assert capitalize("THAT") == "That"
+    assert capitalize("MoRe") == "More"

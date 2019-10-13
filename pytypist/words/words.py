@@ -36,3 +36,11 @@ def collect_words_containing(
                 words_subset.append(word)
 
     return words_subset
+
+
+def capitalize(word):
+    word_list = list(str(word).lower())
+    if len(word_list) == 0:
+        raise ValueError("Expected a word, not blank text.")
+    word_list[0] = word_list[0].upper()
+    return "".join(word_list)
