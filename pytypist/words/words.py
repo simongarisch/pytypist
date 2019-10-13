@@ -44,3 +44,13 @@ def capitalize(word):
         raise ValueError("Expected a word, not blank text.")
     word_list[0] = word_list[0].upper()
     return "".join(word_list)
+
+
+def collect_words_starting_with(characters: str):
+    words = collect_words()
+    characters = str(characters).lower()
+    words_subset = [
+        str(word).lower() for word in words
+        if word.startswith(characters)
+    ]
+    return words_subset

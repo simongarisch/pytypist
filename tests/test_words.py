@@ -1,4 +1,8 @@
-from pytypist.words import collect_words_containing, capitalize
+from pytypist.words import (
+    collect_words_containing,
+    capitalize,
+    collect_words_starting_with,
+)
 
 
 def only_characters_included(words, characters):
@@ -48,3 +52,12 @@ def test_capitalize():
     assert capitalize("this") == "This"
     assert capitalize("THAT") == "That"
     assert capitalize("MoRe") == "More"
+
+
+def test_collect_words_starting_with():
+    words = collect_words_starting_with("a")
+    for word in words:
+        assert word[0] == "a"
+    words = collect_words_starting_with("Sta")
+    for word in words:
+        assert word[0:3] == "sta"
