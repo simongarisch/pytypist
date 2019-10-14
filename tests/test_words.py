@@ -2,6 +2,7 @@ from pytypist.words import (
     collect_words_containing,
     capitalize,
     collect_words_starting_with,
+    collect_words_ending_with,
 )
 
 
@@ -60,4 +61,13 @@ def test_collect_words_starting_with():
         assert word[0] == "a"
     words = collect_words_starting_with("Sta")
     for word in words:
-        assert word[0:3] == "sta"
+        assert word[:3] == "sta"
+
+
+def test_collect_words_ending_with():
+    words = collect_words_ending_with("g")
+    for word in words:
+        assert word[-1] == "g"
+    words = collect_words_ending_with("ing")
+    for word in words:
+        assert word[-3:] == "ing"

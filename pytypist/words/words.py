@@ -54,3 +54,13 @@ def collect_words_starting_with(characters: str):
         if word.startswith(characters)
     ]
     return words_subset
+
+
+def collect_words_ending_with(characters: str):
+    words = collect_words()
+    characters = str(characters).lower()
+    words_subset = [
+        str(word).lower() for word in words
+        if word.endswith(characters)
+    ]
+    return words_subset
