@@ -1,13 +1,20 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
+from enum import Enum
 from .signals import signals
 from .ui_settings import config
 from ..lessons import Lesson
 
 
+class TypingState(Enum):
+    UNSTARTED = 1
+    TYPING = 2
+    FINISHED = 3
+
+
 class TypingWidget(QtWidgets.QTextEdit):
     def __init__(self, parent):
         super().__init__("", parent)
-        self.finished = True
+        self.typing_state = TypingState.UNSTARTED
         self.chars_per_word = config.getint("typing_widget", "chars_per_word")
         self.set_font()
         self.create_timers()
@@ -55,6 +62,16 @@ class TypingWidget(QtWidgets.QTextEdit):
         if self.enable_typing_in <= 0:
             self.start_typing()
 
+    def start_typing(self):
+        if self.typing_state != TypingState.FINISHED:
+            self.countdown_timer.stop()
+            self.set_disabled(False)
+            signals.status_update.emit("Start typing...")
+            self.typing_state = TypingState.TYPING
+        else:
+            self.set_disabled(True)
+            signals.status_update.emit("Finished exercise...")
+
     def show_typing_time(self):
         self.typing_time += 1
         signals.update_typing_time.emit(self.typing_time)
@@ -68,21 +85,12 @@ class TypingWidget(QtWidgets.QTextEdit):
     def show_accuracy(self):
         signals.update_accuracy.emit(self.accuracy)
 
-    def start_typing(self):
-        if not self.finished:
-            self.countdown_timer.stop()
-            self.set_disabled(False)
-            signals.status_update.emit("Start typing...")
-        else:
-            self.set_disabled(True)
-            signals.status_update.emit("Finished exercise...")
-
     @QtCore.pyqtSlot(bool)
     def set_disabled(self, disabled=True):
         self.setDisabled(disabled)
         if disabled:
             self.typing_timer.stop()
-            if self.finished is False:
+            if self.typing_state is TypingState.TYPING:
                 signals.status_update.emit("Paused...")
         else:
             self.typing_timer.start()
@@ -90,6 +98,9 @@ class TypingWidget(QtWidgets.QTextEdit):
 
     def refresh(self):
         self.enable_typing_in = config.getint("typing_widget", "countdown")
+        self.countdown_timer.stop()
+        self.typing_timer.stop()
+
         self.typing_time = 0
         self.wpm = 0
         self.accuracy = 0
@@ -97,9 +108,8 @@ class TypingWidget(QtWidgets.QTextEdit):
         signals.update_typing_time.emit(self.typing_time)
         signals.update_wpm.emit(self.wpm)
         signals.update_accuracy.emit(self.accuracy)
-        self.countdown_timer.stop()
-        self.typing_timer.stop()
-        self.finished = False
+
+        self.typing_state = TypingState.UNSTARTED
         self.entered_text = ""
         self.target_text = None
 
@@ -110,9 +120,10 @@ class TypingWidget(QtWidgets.QTextEdit):
         self.target_text = lesson.content
         self.update_display()
         signals.status_update.emit("Ready.")
+        self.setDisabled(True)
 
     def keyPressEvent(self, event):
-        if self.finished or self.target_text is None:
+        if self.typing_state is TypingState.FINISHED or self.target_text is None:
             return
         if event.key() == QtCore.Qt.Key_Backspace:
             if len(self.entered_text) > 0:
@@ -128,11 +139,17 @@ class TypingWidget(QtWidgets.QTextEdit):
 
         len_entered = len(entered_text)
         len_target = len(target_text)
+
+        if self.typing_state is TypingState.UNSTARTED:
+            self.setText(target_text)
+            return
+
         if len_entered >= len_target:
-            self.finished = True
+            self.typing_state = typing_state.FINISHED
             self.typing_timer.stop()
             self.set_disabled(True)
             signals.status_update.emit("Finished exercise...")
+            return
 
         display_text = ""
         greens, reds = 0, 0

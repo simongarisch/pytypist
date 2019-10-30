@@ -19,6 +19,7 @@ class PresentationWidget(QtWidgets.QWidget):
     def load(self, file_path):
         url = QtCore.QUrl().fromLocalFile(file_path)
         self.browser.load(url)
+        signals.status_update.emit("Ready.")
 
     @QtCore.pyqtSlot(str)
     def section_selected(self, section_name):
