@@ -136,17 +136,19 @@ class TypingWidget(QtWidgets.QTextEdit):
         self.update_display()
 
     def update_display(self):
-        if self.typing_state == TypingState.UNSTARTED:
-            display_text = '<span style="color:{}">{}</span>'.format(
-                "green", self.target_text
-            )
-            self.setText(display_text)
-            return
 
         entered_text = self.entered_text
         target_text = self.target_text
         len_entered = len(entered_text)
         len_target = len(target_text)
+
+        if self.typing_state == TypingState.UNSTARTED \
+                or len(entered_text) == 0:
+            display_text = '<span style="color:{}">{}</span>'.format(
+                "green", self.target_text
+            )
+            self.setText(display_text)
+            return
 
         display_text = ""
         greens, reds = 0, 0
