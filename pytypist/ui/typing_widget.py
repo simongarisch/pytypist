@@ -144,13 +144,6 @@ class TypingWidget(QtWidgets.QTextEdit):
             self.setText(target_text)
             return
 
-        if len_entered >= len_target:
-            self.typing_state = TypingState.FINISHED
-            self.typing_timer.stop()
-            self.set_disabled(True)
-            signals.status_update.emit("Finished exercise...")
-            return
-
         display_text = ""
         greens, reds = 0, 0
         for char_entered, char_target in zip(entered_text, target_text):
@@ -173,3 +166,10 @@ class TypingWidget(QtWidgets.QTextEdit):
         cursor = self.textCursor()
         cursor.setPosition(len_entered, QtGui.QTextCursor.MoveAnchor)
         self.setTextCursor(cursor)
+
+        if len_entered >= len_target:
+            self.typing_state = TypingState.FINISHED
+            self.typing_timer.stop()
+            self.set_disabled(True)
+            signals.status_update.emit("Finished exercise...")
+            return
