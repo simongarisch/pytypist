@@ -123,8 +123,10 @@ class TypingWidget(QtWidgets.QTextEdit):
         self.setDisabled(True)
 
     def keyPressEvent(self, event):
-        if self.typing_state is TypingState.FINISHED or self.target_text is None:
+        if self.typing_state is TypingState.FINISHED \
+                or self.target_text is None:
             return
+
         if event.key() == QtCore.Qt.Key_Backspace:
             if len(self.entered_text) > 0:
                 self.entered_text = self.entered_text[:-1]
@@ -149,19 +151,23 @@ class TypingWidget(QtWidgets.QTextEdit):
         display_text = ""
         greens, reds = 0, 0
         for char_entered, char_target in zip(entered_text, target_text):
-            color = "green"
-            greens += 1
-            if char_entered != char_target:
+            if char_entered == char_target:
+                color = "green"
+                greens += 1
+            else:
                 color = "red"
                 reds += 1
                 # replace red (incorrect) spaces with red asterix
                 if char_target == " ":
                     char_target = "*"
+
             display_text += '<span style="color:{}">{}</span>'.format(
                 color, char_target
             )
+
         if len_entered > 0:
             self.accuracy = int(greens / (greens + reds) * 100)
+
         display_text += target_text[len_entered:]
         self.setText(display_text)
 
