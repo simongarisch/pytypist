@@ -145,7 +145,7 @@ class TypingWidget(QtWidgets.QTextEdit):
             return
 
         if len_entered >= len_target:
-            self.typing_state = typing_state.FINISHED
+            self.typing_state = TypingState.FINISHED
             self.typing_timer.stop()
             self.set_disabled(True)
             signals.status_update.emit("Finished exercise...")
