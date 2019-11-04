@@ -176,6 +176,17 @@ class TypingWidget(QtWidgets.QTextEdit):
         cursor = self.textCursor()
         cursor.setPosition(len_entered, QtGui.QTextCursor.MoveAnchor)
         self.setTextCursor(cursor)
+        """
+        current_row = self.textCursor().blockNumber() + 1  # not much love there...
+
+        scrollbar = self.verticalScrollBar()
+        target_vertical_scroll = min(scrollbar.maximum(), current_row + 4)
+        self.verticalScrollBar().setValue(target_vertical_scroll)
+        print(current_row, scrollbar.maximum(), target_vertical_scroll)
+
+        block = cursor.block()
+        print(block.firstLineNumber(), block.length(), block.lineCount(), block.position(), cursor.positionInBlock())
+        """
 
         if len_entered >= len_target:
             self.typing_state = TypingState.FINISHED
