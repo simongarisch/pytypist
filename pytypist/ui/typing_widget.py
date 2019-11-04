@@ -176,6 +176,14 @@ class TypingWidget(QtWidgets.QTextEdit):
         cursor = self.textCursor()
         cursor.setPosition(len_entered, QtGui.QTextCursor.MoveAnchor)
         self.setTextCursor(cursor)
+
+        scrollbar = self.verticalScrollBar()
+        scroll_value = scrollbar.value()
+        current_position = scrollbar.sliderPosition()
+        scrollbar_increment = 200
+        if current_position > 0:
+            scrollbar.setSliderPosition(scrollbar.sliderPosition() + scrollbar_increment)
+
         """
         current_row = self.textCursor().blockNumber() + 1  # not much love there...
 
