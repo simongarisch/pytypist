@@ -136,7 +136,6 @@ class TypingWidget(QtWidgets.QTextEdit):
         self.update_display()
 
     def update_display(self):
-
         entered_text = self.entered_text
         target_text = self.target_text
         len_entered = len(entered_text)
