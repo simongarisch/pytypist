@@ -178,11 +178,11 @@ class TypingWidget(QtWidgets.QTextEdit):
         self.setTextCursor(cursor)
 
         scrollbar = self.verticalScrollBar()
-        scroll_value = scrollbar.value()
         current_position = scrollbar.sliderPosition()
         scrollbar_increment = 200
         if current_position > 0 or cursor.position() > 200:
-            scrollbar.setSliderPosition(scrollbar.sliderPosition() + scrollbar_increment)
+            new_position = scrollbar.sliderPosition() + scrollbar_increment
+            scrollbar.setSliderPosition(new_position)
 
         if len_entered >= len_target:
             self.typing_state = TypingState.FINISHED
