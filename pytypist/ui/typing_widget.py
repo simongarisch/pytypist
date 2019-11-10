@@ -1,8 +1,17 @@
+import os
+from datetime import datetime
 from PyQt5 import QtWidgets, QtCore, QtGui
 from enum import Enum
 from .signals import signals
 from .ui_settings import config
 from ..lessons import Lesson
+
+
+ICON_PATH = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "images",
+    config.get("main_window", "icon")
+)
 
 
 class TypingState(Enum):
@@ -64,6 +73,7 @@ class TypingWidget(QtWidgets.QTextEdit):
 
     def start_typing(self):
         if self.typing_state != TypingState.FINISHED:
+            self._last_keypress_time = datetime.now()
             self.countdown_timer.stop()
             self.set_disabled(False)
             signals.status_update.emit("Start typing...")
@@ -75,6 +85,16 @@ class TypingWidget(QtWidgets.QTextEdit):
     def show_typing_time(self):
         self.typing_time += 1
         signals.update_typing_time.emit(self.typing_time)
+        # pause the lesson if more than X seconds has elapsed since keystroke
+        if self._last_keypress_time is not None:
+            if (datetime.now() - self._last_keypress_time).seconds >= 10:
+                self.set_disabled()
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setWindowIcon(QtGui.QIcon(ICON_PATH))
+                msg.setText("Press Start To Resume")
+                msg.setWindowTitle("Lesson Paused")
+                msg.exec_()
 
     def show_wpm(self):
         words_typed = len(self.entered_text) / self.chars_per_word
@@ -97,6 +117,7 @@ class TypingWidget(QtWidgets.QTextEdit):
             self.setFocus()
 
     def refresh(self):
+        self._last_keypress_time = None
         self.enable_typing_in = config.getint("typing_widget", "countdown")
         self.countdown_timer.stop()
         self.typing_timer.stop()
@@ -123,6 +144,7 @@ class TypingWidget(QtWidgets.QTextEdit):
         self.setDisabled(True)
 
     def keyPressEvent(self, event):
+        self._last_keypress_time = datetime.now()
         if self.typing_state is TypingState.FINISHED \
                 or self.target_text is None:
             return
