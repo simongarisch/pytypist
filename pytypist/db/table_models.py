@@ -19,7 +19,8 @@ class Db:
     @classmethod
     def initialize(cls, use_testdb=False):
         test_or_prod = "test" if use_testdb else "prod"
-        engine_desc = config.get("database_engines", test_or_prod)
+        engine_desc = config.get("engines", test_or_prod)
+        print(engine_desc)
         cls.engine = create_engine(engine_desc)
         cls.Base.metadata.create_all(cls.engine)
 
