@@ -54,7 +54,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         splitter.addWidget(left_frame)
         splitter.addWidget(right_frame)
-        splitter.setSizes([25, 75])
+        splitter.setSizes([35, 65])
 
         lessons_widget = self.lessons_widget = LessonsWidget(left_frame)
         stats_widget = self.stats_widget = StatsWidget(right_frame)
