@@ -16,5 +16,6 @@ class Signals(QtCore.QObject):
     enable_typing = QtCore.pyqtSignal()
     disable_typing = QtCore.pyqtSignal()
 
+    update_database_lessons_stats = QtCore.pyqtSignal(str)
 
 signals = Signals()

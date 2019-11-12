@@ -32,3 +32,29 @@ def populate_lessons(use_testdb=False):
             session.add(entry)
 
     session.commit()
+
+
+def populate_lessons_stats(use_testdb=False, stats):
+    Db.initialize(use_testdb)
+    Session = sessionmaker(bind=Db.engine)
+    session = Session()
+
+    db_lessons = session.query(table_models.Lessons).all()
+    ids_dict = {lesson.name: lesson.id for lesson in db_lessons}
+
+    lesson_id = ids_dict[stats.lesson_name]
+    date_time = stats.date_time
+    seconds_elapsed = stats.seconds_elapsed
+    wpm = stats.wpm
+    accuracy = stats.accuracy
+
+    entry = table_models.LessonsStats(
+        lesson_id=lesson_id,
+        date_time=stats.date_time,
+        seconds_elapsed=stats.seconds_elapsed,
+        wpm=stats.wpm,
+        accuracy=stats.accuracy,
+    )
+    session.add(entry)
+
+    session.commit()

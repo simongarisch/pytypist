@@ -32,7 +32,7 @@ class Lessons(Db.Base):
     name = Column(String, unique=True, nullable=False)
 
 
-class LessonsCompleted(Db.Base):
+class LessonsStats(Db.Base):
     __tablename__ = "lessons_completed"
     id = Column(Integer, primary_key=True, autoincrement=True)
     lesson_id = Column(Integer, ForeignKey("lessons.id"), nullable=False)

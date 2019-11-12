@@ -3,9 +3,10 @@ from datetime import datetime
 from PyQt5 import QtWidgets, QtGui, QtCore
 from .ui_settings import config
 from .signals import signals
+from .. import db
 
 
-LessonStats = namedtuple("LessonStats", "date_time seconds_elapsed wpm accuracy")
+LessonStats = namedtuple("LessonStats", "lesson_name date_time seconds_elapsed wpm accuracy")
 
 
 class StatsWidget(QtWidgets.QWidget):
@@ -13,8 +14,9 @@ class StatsWidget(QtWidgets.QWidget):
         super().__init__(parent)
         self.setup_ui()
 
-    def fetch_stats(self):
+    def fetch_stats(self, lesson_name):
         return LessonStats(
+            lesson_name,
             datetime.now,
             self.timer_lcd.intValue(),
             self.wpm_lcd.intValue(),
@@ -62,6 +64,9 @@ class StatsWidget(QtWidgets.QWidget):
         signals.update_typing_time.connect(self.update_typing_time)
         signals.update_wpm.connect(self.update_wpm)
         signals.update_accuracy.connect(self.update_accuracy)
+        signals.update_database_lessons_stats.connect(
+            self.update_database_lessons_stats
+        )
 
     @QtCore.pyqtSlot(int)
     def update_countdown(self, number):
@@ -78,6 +83,11 @@ class StatsWidget(QtWidgets.QWidget):
     @QtCore.pyqtSlot(int)
     def update_accuracy(self, number):
         self.accuracy_lcd.display(number)
+
+    @QtCore.pyqtSlot(str)
+    def update_database_lessons_stats(self, lesson_name):
+        stats = self.fetch_stats(lesson_name)
+        db.populate_lessons_stats(stats)
 
     def start_clicked(self):
         signals.start_countdown.emit()

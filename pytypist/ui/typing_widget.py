@@ -137,7 +137,7 @@ class TypingWidget(QtWidgets.QTextEdit):
     @QtCore.pyqtSlot(str)
     def set_target_text(self, lesson_name):
         self.refresh()
-        lesson = Lesson.get_lesson_by_name(lesson_name)
+        lesson = self._lesson = Lesson.get_lesson_by_name(lesson_name)
         self.target_text = lesson.content
         self.update_display()
         signals.status_update.emit("Ready.")
@@ -210,4 +210,5 @@ class TypingWidget(QtWidgets.QTextEdit):
             self.typing_timer.stop()
             self.set_disabled(True)
             signals.status_update.emit("Finished exercise...")
+            signals.update_database_lessons_stats.emit(self._lesson.name)
             return
