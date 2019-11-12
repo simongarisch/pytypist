@@ -29,5 +29,6 @@ def populate_lessons(use_testdb=False):
                 section=lesson.section,
                 name=lesson_name
             )
+            session.add(entry)
 
     session.commit()
