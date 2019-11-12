@@ -1,12 +1,25 @@
+from collections import namedtuple
+from datetime import datetime
 from PyQt5 import QtWidgets, QtGui, QtCore
 from .ui_settings import config
 from .signals import signals
+
+
+LessonStats = namedtuple("LessonStats", "date_time seconds_elapsed wpm accuracy")
 
 
 class StatsWidget(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setup_ui()
+
+    def fetch_stats(self):
+        return LessonStats(
+            datetime.now,
+            self.timer_lcd.intValue(),
+            self.wpm_lcd.intValue(),
+            self.accuracy_lcd.intValue(),
+        )
 
     def setup_ui(self):
         font_name = config.get("stats_widget", "font_name")
