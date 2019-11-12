@@ -1,3 +1,4 @@
+import os
 from pytypist import db
 
 
