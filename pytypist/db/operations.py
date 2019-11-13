@@ -1,4 +1,3 @@
-import os
 from sqlalchemy.orm import sessionmaker
 from pytypist.lessons import Sections
 from . import table_models

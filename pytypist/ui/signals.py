@@ -18,4 +18,5 @@ class Signals(QtCore.QObject):
 
     update_database_lessons_stats = QtCore.pyqtSignal(str)
 
+
 signals = Signals()

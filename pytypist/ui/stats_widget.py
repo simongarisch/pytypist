@@ -6,7 +6,10 @@ from .signals import signals
 from .. import db
 
 
-LessonStats = namedtuple("LessonStats", "lesson_name date_time seconds_elapsed wpm accuracy")
+LessonStats = namedtuple(
+    "LessonStats",
+    "lesson_name date_time seconds_elapsed wpm accuracy"
+)
 
 
 class StatsWidget(QtWidgets.QWidget):
