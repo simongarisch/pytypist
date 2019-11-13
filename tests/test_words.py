@@ -39,7 +39,6 @@ def test_collect_words_must_contain():
     characters = "asdf"
     required = "as"
     words = collect_words_containing(characters, must_contain=required)
-    print(words)
     assert len(words) > 0
     assert only_characters_included(
         words, characters
