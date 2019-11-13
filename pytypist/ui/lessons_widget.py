@@ -2,11 +2,13 @@ from PyQt5 import QtWidgets, QtGui
 from .signals import signals
 from .ui_settings import config
 from ..lessons import Lesson, Sections
+from ..db import operations as db_operations
 
 
 class LessonsWidget(QtWidgets.QTreeWidget):
     def __init__(self, parent):
         super().__init__(parent)
+        db_operations.populate_lessons()
         self.setup_ui()
 
     def setup_ui(self):
