@@ -11,6 +11,11 @@ def clear():
 
 
 def populate_lessons(use_testdb=False):
+    """ Before we can reference lessons they need to be
+        populated in the database.
+        The intention is to have this handled by the lessons_widget
+        when instantiated.
+    """
     Db.initialize(use_testdb)
     Session = sessionmaker(bind=Db.engine)
     session = Session()
@@ -41,12 +46,7 @@ def populate_lessons_stats(stats, use_testdb=False, ):
 
     db_lessons = session.query(table_models.Lessons).all()
     ids_dict = {lesson.name: lesson.id for lesson in db_lessons}
-
     lesson_id = ids_dict[stats.lesson_name]
-    date_time = stats.date_time
-    seconds_elapsed = stats.seconds_elapsed
-    wpm = stats.wpm
-    accuracy = stats.accuracy
 
     entry = table_models.LessonsStats(
         lesson_id=lesson_id,
