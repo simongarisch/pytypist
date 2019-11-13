@@ -17,7 +17,7 @@ class StatsWidget(QtWidgets.QWidget):
     def fetch_stats(self, lesson_name):
         return LessonStats(
             lesson_name,
-            datetime.now,
+            datetime.now(),
             self.timer_lcd.intValue(),
             self.wpm_lcd.intValue(),
             self.accuracy_lcd.intValue(),
