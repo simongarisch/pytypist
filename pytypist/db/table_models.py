@@ -20,7 +20,6 @@ class Db:
     def initialize(cls, use_testdb=False):
         test_or_prod = "test" if use_testdb else "prod"
         engine_desc = config.get("engines", test_or_prod)
-        print(engine_desc)
         cls.engine = create_engine(engine_desc)
         cls.Base.metadata.create_all(cls.engine)
 
@@ -36,7 +35,7 @@ class LessonsStats(Db.Base):
     __tablename__ = "lessons_completed"
     id = Column(Integer, primary_key=True, autoincrement=True)
     lesson_id = Column(Integer, ForeignKey("lessons.id"), nullable=False)
-    datetime = Column(DateTime, nullable=False)
+    date_time = Column(DateTime, nullable=False)
     seconds_elapsed = Column(Integer, nullable=False)
     wpm = Column(Float, nullable=False)
     accuracy = Column(Float, nullable=False)
