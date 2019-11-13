@@ -211,4 +211,3 @@ class TypingWidget(QtWidgets.QTextEdit):
             self.set_disabled(True)
             signals.status_update.emit("Finished exercise...")
             signals.update_database_lessons_stats.emit(self._lesson.name)
-            return
