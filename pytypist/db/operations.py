@@ -39,7 +39,7 @@ def populate_lessons(use_testdb=False):
     session.commit()
 
 
-def populate_lessons_stats(stats, use_testdb=False, ):
+def populate_lessons_stats(stats, use_testdb=False):
     Db.initialize(use_testdb)
     Session = sessionmaker(bind=Db.engine)
     session = Session()
