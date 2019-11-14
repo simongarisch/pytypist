@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from PyQt5 import QtWidgets, QtCore, QtGui
 from enum import Enum
-from .signals import signals
+from .signals import signals, thread_pool
 from .ui_settings import config
 from ..lessons import Lesson
 
@@ -12,6 +12,14 @@ ICON_PATH = os.path.join(
     "images",
     config.get("main_window", "icon")
 )
+
+
+class SaveTypingErrorsTask(QtCore.QRunnable):
+    def __init__(self, stats):
+        super().__init__()
+
+    def run(self):
+        pass
 
 
 class TypingState(Enum):
