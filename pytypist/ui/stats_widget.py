@@ -2,7 +2,7 @@ from collections import namedtuple
 from datetime import datetime
 from PyQt5 import QtWidgets, QtGui, QtCore
 from .ui_settings import config
-from .signals import signals
+from .signals import signals, thread_pool
 from .. import db
 
 
@@ -10,6 +10,17 @@ LessonStats = namedtuple(
     "LessonStats",
     "lesson_name date_time seconds_elapsed wpm accuracy"
 )
+
+
+class SaveLessonStatsTask(QtCore.QRunnable):
+    def __init__(self, stats):
+        super().__init__()
+        if not isinstance(stats, LessonStats):
+            raise TypeError("Expected LessonStats instance.")
+        self._stats = stats
+
+    def run(self):
+        db.populate_lessons_stats(self._stats)
 
 
 class StatsWidget(QtWidgets.QWidget):
@@ -90,7 +101,8 @@ class StatsWidget(QtWidgets.QWidget):
     @QtCore.pyqtSlot(str)
     def update_database_lessons_stats(self, lesson_name):
         stats = self.fetch_stats(lesson_name)
-        db.populate_lessons_stats(stats)
+        task = SaveLessonStatsTask(stats)
+        thread_pool.start(task)
 
     def start_clicked(self):
         signals.start_countdown.emit()
