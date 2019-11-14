@@ -139,8 +139,10 @@ class TypingWidget(QtWidgets.QTextEdit):
         signals.update_accuracy.emit(self.accuracy)
 
         self.typing_state = TypingState.UNSTARTED
+        self.greens = self.reds = 0
         self.entered_text = ""
         self.target_text = None
+        self.char_comparison_list = []  # with green for hit, red for miss
 
     @QtCore.pyqtSlot(str)
     def set_target_text(self, lesson_name):
@@ -157,15 +159,17 @@ class TypingWidget(QtWidgets.QTextEdit):
                 or self.target_text is None:
             return
 
-        if event.key() == QtCore.Qt.Key_Backspace:
+        event_key = event.key()
+        if event_key == QtCore.Qt.Key_Backspace:
             if len(self.entered_text) > 0:
                 self.entered_text = self.entered_text[:-1]
+                self.char_comparison_list = self.char_comparison_list[:-1]
         else:
             text = event.text()
             self.entered_text += text
-        self.update_display()
+        self.update_display(event_key)
 
-    def update_display(self):
+    def update_display(self, event_key=None):
         entered_text = self.entered_text
         target_text = self.target_text
         len_entered = len(entered_text)
@@ -180,26 +184,30 @@ class TypingWidget(QtWidgets.QTextEdit):
             return
 
         display_text = ""
-        greens, reds = 0, 0
-        for char_entered, char_target in zip(entered_text, target_text):
+        if event_key != QtCore.Qt.Key_Backspace:
+            char_entered = entered_text[len_entered-1]
+            char_target = target_text[len_entered-1]
             if char_entered == char_target:
                 color = "green"
-                greens += 1
+                self.greens += 1
             else:
                 color = "red"
-                reds += 1
+                self.reds += 1
                 # replace red (incorrect) spaces with red asterix
                 if char_target == " ":
                     char_target = "*"
-
-            display_text += '<span style="color:{}">{}</span>'.format(
+            char_text = '<span style="color:{}">{}</span>'.format(
                 color, char_target
             )
 
+            self.char_comparison_list.append(char_text)
+
+        greens, reds = self.greens, self.reds
         if len_entered > 0:
             self.accuracy = int(greens / (greens + reds) * 100)
 
-        display_text += target_text[len_entered:]
+        #print(self.char_comparison_list)
+        display_text = "".join(self.char_comparison_list) + target_text[len_entered:]
         self.setText(display_text)
 
         cursor = self.textCursor()
