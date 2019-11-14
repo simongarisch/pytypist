@@ -20,3 +20,5 @@ class Signals(QtCore.QObject):
 
 
 signals = Signals()
+
+thread_pool = QtCore.QThreadPool()
