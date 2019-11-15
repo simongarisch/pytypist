@@ -3,6 +3,7 @@ from datetime import datetime
 from PyQt5 import QtWidgets, QtCore, QtGui
 from enum import Enum
 from .signals import signals, thread_pool
+from .typing_input_handler import TypingInputHandler
 from .ui_settings import config
 from ..lessons import Lesson
 
@@ -29,14 +30,16 @@ class TypingState(Enum):
 
 
 class TypingWidget(QtWidgets.QTextEdit):
+    chars_per_word = config.getint("typing_widget", "chars_per_word")
+
     def __init__(self, parent):
         super().__init__("", parent)
         self.typing_state = TypingState.UNSTARTED
-        self.chars_per_word = config.getint("typing_widget", "chars_per_word")
         self.set_font()
         self.create_timers()
         self.connect_signals()
         self.set_disabled()
+        self.typing_input_handler = TypingInputHandler()
         self.refresh()
 
     def set_font(self):
@@ -44,6 +47,12 @@ class TypingWidget(QtWidgets.QTextEdit):
         font_size = config.getint("typing_widget", "font_size")
         font = QtGui.QFont(font_name, font_size, QtGui.QFont.Monospace)
         self.setFont(font)
+
+    def create_timers(self):
+        self.countdown_timer = QtCore.QTimer()
+        self.typing_timer = QtCore.QTimer()
+        self.countdown_timer.setInterval(1000)
+        self.typing_timer.setInterval(1000)
 
     def connect_signals(self):
         signals.lesson_selected.connect(self.set_target_text)
@@ -57,12 +66,6 @@ class TypingWidget(QtWidgets.QTextEdit):
         ]
         for method in stats_methods:
             self.typing_timer.timeout.connect(method)
-
-    def create_timers(self):
-        self.countdown_timer = QtCore.QTimer()
-        self.typing_timer = QtCore.QTimer()
-        self.countdown_timer.setInterval(1000)
-        self.typing_timer.setInterval(1000)
 
     def start_countdown(self):
         if self.enable_typing_in <= 0:
@@ -105,13 +108,14 @@ class TypingWidget(QtWidgets.QTextEdit):
                 msg.exec_()
 
     def show_wpm(self):
-        words_typed = len(self.entered_text) / self.chars_per_word
+        len_entered = len(self.typing_input_handler.entered_text)
+        words_typed = len_entered / self.chars_per_word
         minutes_passed = (self.typing_time / 60)
         self.wpm = int(words_typed / minutes_passed)
         signals.update_wpm.emit(self.wpm)
 
     def show_accuracy(self):
-        signals.update_accuracy.emit(self.accuracy)
+        signals.update_accuracy.emit(self.typing_input_handler.accuracy)
 
     @QtCore.pyqtSlot(bool)
     def set_disabled(self, disabled=True):
@@ -125,6 +129,7 @@ class TypingWidget(QtWidgets.QTextEdit):
             self.setFocus()
 
     def refresh(self):
+        self.typing_input_handler.refresh()
         self._last_keypress_time = None
         self.enable_typing_in = config.getint("typing_widget", "countdown")
         self.countdown_timer.stop()
@@ -132,84 +137,34 @@ class TypingWidget(QtWidgets.QTextEdit):
 
         self.typing_time = 0
         self.wpm = 0
-        self.accuracy = 0
         signals.update_countdown.emit(self.enable_typing_in)
         signals.update_typing_time.emit(self.typing_time)
         signals.update_wpm.emit(self.wpm)
-        signals.update_accuracy.emit(self.accuracy)
-
+        signals.update_accuracy.emit(self.typing_input_handler.accuracy)
         self.typing_state = TypingState.UNSTARTED
-        self.greens = self.reds = 0
-        self.entered_text = ""
-        self.target_text = None
-        self.char_comparison_list = []  # with green for hit, red for miss
+
 
     @QtCore.pyqtSlot(str)
     def set_target_text(self, lesson_name):
         self.refresh()
         lesson = self._lesson = Lesson.get_lesson_by_name(lesson_name)
-        self.target_text = lesson.content
+        self.typing_input_handler.refresh(lesson.content)
         self.update_display()
         signals.status_update.emit("Ready.")
         self.setDisabled(True)
 
     def keyPressEvent(self, event):
         self._last_keypress_time = datetime.now()
-        if self.typing_state is TypingState.FINISHED \
-                or self.target_text is None:
+        if self.typing_state is not TypingState.TYPING:
             return
+        self.update_display(event)
 
-        event_key = event.key()
-        if event_key == QtCore.Qt.Key_Backspace:
-            if len(self.entered_text) > 0:
-                self.entered_text = self.entered_text[:-1]
-                self.char_comparison_list = self.char_comparison_list[:-1]
-        else:
-            text = event.text()
-            self.entered_text += text
-        self.update_display(event_key)
+    def update_display(self, event=None):
+        if event is not None:
+            self.typing_input_handler.process_key_press(event)
+        self.setText(self.typing_input_handler.display_text)
 
-    def update_display(self, event_key=None):
-        entered_text = self.entered_text
-        target_text = self.target_text
-        len_entered = len(entered_text)
-        len_target = len(target_text)
-
-        if self.typing_state == TypingState.UNSTARTED \
-                or len(entered_text) == 0:
-            display_text = '<span style="color:{}">{}</span>'.format(
-                "green", self.target_text
-            )
-            self.setText(display_text)
-            return
-
-        display_text = ""
-        if event_key != QtCore.Qt.Key_Backspace:
-            char_entered = entered_text[len_entered-1]
-            char_target = target_text[len_entered-1]
-            if char_entered == char_target:
-                color = "green"
-                self.greens += 1
-            else:
-                color = "red"
-                self.reds += 1
-                # replace red (incorrect) spaces with red asterix
-                if char_target == " ":
-                    char_target = "*"
-            char_text = '<span style="color:{}">{}</span>'.format(
-                color, char_target
-            )
-
-            self.char_comparison_list.append(char_text)
-
-        greens, reds = self.greens, self.reds
-        if len_entered > 0:
-            self.accuracy = int(greens / (greens + reds) * 100)
-
-        #print(self.char_comparison_list)
-        display_text = "".join(self.char_comparison_list) + target_text[len_entered:]
-        self.setText(display_text)
-
+        len_entered = len(self.typing_input_handler.entered_text)
         cursor = self.textCursor()
         cursor.setPosition(len_entered, QtGui.QTextCursor.MoveAnchor)
         self.setTextCursor(cursor)
@@ -221,7 +176,7 @@ class TypingWidget(QtWidgets.QTextEdit):
             new_position = scrollbar.sliderPosition() + scrollbar_increment
             scrollbar.setSliderPosition(new_position)
 
-        if len_entered >= len_target:
+        if self.typing_input_handler.finished:
             self.typing_state = TypingState.FINISHED
             self.typing_timer.stop()
             self.set_disabled(True)
