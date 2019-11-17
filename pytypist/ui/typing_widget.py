@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from PyQt5 import QtWidgets, QtCore, QtGui
 from enum import Enum
-from .signals import signals, thread_pool
+from .signals import signals
 from .typing_input_handler import TypingInputHandler
 from .ui_settings import config
 from ..lessons import Lesson
@@ -13,14 +13,6 @@ ICON_PATH = os.path.join(
     "images",
     config.get("main_window", "icon")
 )
-
-
-class SaveTypingErrorsTask(QtCore.QRunnable):
-    def __init__(self, stats):
-        super().__init__()
-
-    def run(self):
-        pass
 
 
 class TypingState(Enum):
@@ -147,7 +139,7 @@ class TypingWidget(QtWidgets.QTextEdit):
     def set_target_text(self, lesson_name):
         self.refresh()
         lesson = self._lesson = Lesson.get_lesson_by_name(lesson_name)
-        self.typing_input_handler.refresh(lesson.content)
+        self.typing_input_handler.refresh(lesson_name, lesson.content)
         self.update_display()
         signals.status_update.emit("Ready.")
         self.setDisabled(True)

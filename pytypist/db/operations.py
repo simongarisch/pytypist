@@ -34,7 +34,6 @@ def populate_lessons(use_testdb=False):
                 name=lesson_name
             )
             session.add(entry)
-
     session.commit()
 
 
@@ -55,5 +54,22 @@ def populate_lessons_stats(stats, use_testdb=False):
         accuracy=stats.accuracy,
     )
     session.add(entry)
+    session.commit()
 
+
+def populate_typing_error(typing_error, use_testdb=False):
+    Db.initialize(use_testdb)
+    Session = sessionmaker(bind=Db.engine)
+    session = Session()
+
+    db_lessons = session.query(table_models.Lessons).all()
+    ids_dict = {lesson.name: lesson.id for lesson in db_lessons}
+    lesson_id = ids_dict[typing_error.lesson_name]
+
+    entry = table_models.TypingErrors(
+        lesson_id=lesson_id,
+        char_entered=typing_error.char_entered,
+        char_target=typing_error.char_target
+    )
+    session.add(entry)
     session.commit()

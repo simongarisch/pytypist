@@ -45,9 +45,13 @@ class TypingErrors(Db.Base):
     __tablename__ = "typing_errors"
     id = Column(Integer, primary_key=True, autoincrement=True)
     lesson_id = Column(Integer, ForeignKey("lessons.id"), nullable=False)
-    letter = Column(NVARCHAR(1), nullable=False)
-    word = Column(String, nullable=False)
+    char_entered = Column(NVARCHAR(1), nullable=False)
+    char_target = Column(NVARCHAR(1), nullable=False)
     CheckConstraint(
-        "len(letter) == 1",
+        "len(char_entered) == 1",
         name="Incorrect letter must be one char only"
+    )
+    CheckConstraint(
+        "len(char_target) == 1",
+        name="Target letter must be one char only"
     )

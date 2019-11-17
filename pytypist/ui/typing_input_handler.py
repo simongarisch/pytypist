@@ -1,12 +1,33 @@
+from collections import namedtuple
 from PyQt5 import QtCore
 from .ui_settings import config
+from .signals import thread_pool
+from .. import db
+
+
+TypingError = namedtuple(
+    "TypingError",
+    "lesson_name char_entered char_target"
+)
+
+
+class SaveTypingErrorsTask(QtCore.QRunnable):
+    def __init__(self, typing_error):
+        super().__init__()
+        if not isinstance(typing_error, TypingError):
+            raise TypeError("Expected instance of TypingError.")
+        self._typing_error = typing_error
+
+    def run(self):
+        db.populate_typing_error(self._typing_error)
 
 
 class TypingInputHandler:
     hit_color = config.get("typing_widget", "hit_color")
     miss_color = config.get("typing_widget", "miss_color")
 
-    def refresh(self, target_text=None):
+    def refresh(self, lesson_name=None, target_text=None):
+        self.lesson_name = lesson_name
         self.hits = self.miss = 0
         self.accuracy = 0
         self.entered_text = ""
@@ -43,6 +64,12 @@ class TypingInputHandler:
             else:
                 color = self.miss_color
                 self.miss += 1
+                # update our records for this typing error
+                typing_error = TypingError(
+                    self.lesson_name, char_entered, char_target
+                )
+                task = SaveTypingErrorsTask(typing_error)
+                thread_pool.start(task)
                 # replace red (incorrect) spaces with red asterix
                 if char_target == " ":
                     char_target = "*"
