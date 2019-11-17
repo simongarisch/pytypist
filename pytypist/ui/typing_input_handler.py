@@ -25,7 +25,7 @@ class TypingInputHandler:
         if target_text is None:
             return
         event_key = event.key()
-        print(event_key)
+        print(event_key, event.text())
 
         if event_key == QtCore.Qt.Key_Backspace:
             if len(self.entered_text) > 0:
@@ -33,6 +33,8 @@ class TypingInputHandler:
                 self.char_comparison_list = self.char_comparison_list[:-1]
         else:
             char_entered = event.text()
+            if len(char_entered) == 0:
+                return
             self.entered_text += char_entered
             len_entered = len(self.entered_text)
             char_target = target_text[len_entered-1]
@@ -55,7 +57,3 @@ class TypingInputHandler:
         self.display_text = "".join(self.char_comparison_list) + target_text[len(self.entered_text):]
         if len(self.entered_text) >= len(target_text):
             self.finished = True
-        print(self.entered_text)
-        print(target_text[:len(self.entered_text)])
-        print(self.char_comparison_list)
-        print("----------")
