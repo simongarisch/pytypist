@@ -143,7 +143,6 @@ class TypingWidget(QtWidgets.QTextEdit):
         signals.update_accuracy.emit(self.typing_input_handler.accuracy)
         self.typing_state = TypingState.UNSTARTED
 
-
     @QtCore.pyqtSlot(str)
     def set_target_text(self, lesson_name):
         self.refresh()
