@@ -29,6 +29,7 @@ class Lessons(Db.Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     section = Column(String)
     name = Column(String, unique=True, nullable=False)
+    content = Column(String, nullable=False)
 
 
 class LessonsStats(Db.Base):

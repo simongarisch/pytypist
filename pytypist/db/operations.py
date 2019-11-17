@@ -26,12 +26,14 @@ def populate_lessons(use_testdb=False):
     for section in sections.values():
         for lesson in section.lessons:
             lesson_name = lesson.name
+            lesson_content = lesson.content
             if lesson_name in db_lesson_names:
                 # lesson has already been loaded
                 continue
             entry = table_models.Lessons(
                 section=lesson.section,
-                name=lesson_name
+                name=lesson_name,
+                content=lesson_content,
             )
             session.add(entry)
     session.commit()
