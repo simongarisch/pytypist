@@ -69,7 +69,8 @@ class MainWindow(QtWidgets.QMainWindow):
         right_vbox.addWidget(stats_widget)
         right_vbox.addWidget(typing_widget)
         right_vbox.addWidget(presentation_widget)
-        presentation_widget.hide()
+        stats_widget.hide()
+        typing_widget.hide()
         right_frame.setLayout(right_vbox)
 
         self.setCentralWidget(splitter)

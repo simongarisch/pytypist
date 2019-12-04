@@ -1,3 +1,4 @@
+import os
 from PyQt5 import QtCore, QtWidgets, QtWebEngineWidgets
 from .signals import signals
 from ..lessons import Section
@@ -14,7 +15,15 @@ class PresentationWidget(QtWidgets.QWidget):
         vbox = QtWidgets.QVBoxLayout()
         vbox.addWidget(browser)
         self.setLayout(vbox)
+        self.show_landing_presentation()
         signals.section_selected.connect(self.section_selected)
+
+    def show_landing_presentation(self):
+        dire_path = os.path.dirname(os.path.realpath(__file__))
+        presentation_path = os.path.join(
+            dire_path, "landing_presentation", "site_folder", "slides.html"
+        )
+        self.load(presentation_path)
 
     def load(self, file_path):
         url = QtCore.QUrl().fromLocalFile(file_path)
