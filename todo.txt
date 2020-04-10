@@ -1,0 +1,8 @@
+Create a better landing image
+Speed up the typing capture
+Store progress for later
+Chart progress on a separate tab
+Create an associated dockerfile
+Get better test coverage
+More lessons
+Lesson suggestions based on improvement areas
