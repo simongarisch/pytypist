@@ -6,4 +6,4 @@ pytest-qt==3.2.2
 tox==3.13.2
 black==19.3b0
 ipykernel==5.1.2
-nltk==3.4.5
+nltk==3.6.6
